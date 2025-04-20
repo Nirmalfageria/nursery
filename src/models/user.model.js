@@ -1,83 +1,53 @@
-import { Schema, mongoose } from "mongoose";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
-const UserSchema = new Schema(
-  {
-    userName: {
-      type: String,
-      required: true,
-      lowercase: true,
-      unique: true,
-      trim: true,
-      index: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      lowercase: true,
-      unique: true,
-      trim: true,
-    },
-    fullName: {
-      type: String,
-      required: true,
-      lowercase: true,
-      index: true,
-    },
-   
-    orderHistry: {
-      type: Schema.Types.ObjectId,
-      ref: "Order",
-    },
-    password: {
-      type: String,
-      required: [true, "password is required"],
-    },
-    refreshToken: {
-      type: String,
-    },
+const UserSchema = new mongoose.Schema({
+  fullName: {
+    type: String,
+    required: [true, "Full name is required"],
+    trim: true
   },
-  {
-    timestamps: true,
+  username: {
+    type: String,
+    required: [true, "Username is required"],
+    unique: true,
+    trim: true,
+    lowercase: true,
+    minlength: 3,
+    maxlength: 20,
+    match: [/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores"]
+  },
+  email: {
+    type: String,
+    required: [true, "Email is required"],
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please enter a valid email address"]
+  },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+    minlength: [8, "Password must be at least 8 characters"]
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user"
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
-);
-
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = bcrypt.hash(this.password, 10);
-  next();
 });
 
-UserSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password);
-};
-
-UserSchema.methods.generateAccesssToken = function () {
-  return jwt.sign(
-    {
-      id: this._id,
-      username: this.userName,
-      fullName: this.fullName,
-      email: this.email,
-    },
-    process.env.ACCESS_TOKEN_SECERT,
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-    }
-  );
-};
-
-UserSchema.methods.generateRefreshToken = function () {
-  return jwt.sign(
-    {
-      id: this._id,
-    },
-    process.env.REFRESH_TOKEN_SECERT,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
-    }
-  );
-};
-const User = mongoose.model("User", UserSchema);
+// Check if model already exists before creating it
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 export default User;

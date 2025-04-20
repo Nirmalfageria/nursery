@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const DB_NAME = nursery
+const DB_NAME = "nursery"
 
 const DbConnect = async () => {
   try {
