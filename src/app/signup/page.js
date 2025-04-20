@@ -76,7 +76,7 @@ export default function Signup() {
 
       if (response.ok) {
         setIsSuccess(true);
-        setTimeout(() => router.push('/dashboard'), 2000);
+        setTimeout(() => router.push('/login'), 2000);
       } else {
         const errorData = await response.json();
         setErrors(prev => ({ ...prev, form: errorData.message || 'Signup failed' }));
@@ -223,7 +223,7 @@ export default function Signup() {
                     className={`appearance-none block w-full px-3 py-2 border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900`}
                   />
                   {errors.confirmPassword && <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>}
-                </div>await dbconnect();
+                </div>
               </div>
 
               <div>
