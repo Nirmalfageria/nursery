@@ -7,23 +7,37 @@ import Link from 'next/link';
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setIsLoading(true);
+      setError(null);
+      
       try {
         const response = await fetch('/api/me', {
-          credentials: 'include'
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch user data');
+          throw new Error(response.status === 401 ? 'Unauthorized' : 'Failed to fetch user data');
         }
 
-        const data = await response.json();
-        setUserData(data.user);
+        const { user, success } = await response.json();
+        if (success) {
+          setUserData(user);
+        } else {
+          throw new Error('Invalid user data');
+        }
       } catch (error) {
         console.error('Dashboard error:', error);
+        setError(error.message);
+        // Clear any invalid session
+        document.cookie = 'session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         router.push('/login');
       } finally {
         setIsLoading(false);
@@ -35,16 +49,25 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
+      const response = await fetch('/api/logout', {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok) {
-        router.push('/login');
+        // Clear local state
+        setUserData(null);
+        // Force a full reload to ensure all state is cleared
+        window.location.href = '/login';
+      } else {
+        throw new Error('Logout failed');
       }
     } catch (error) {
       console.error('Logout error:', error);
+      setError(error.message);
     }
   };
 
@@ -52,6 +75,23 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600">Error</h2>
+          <p className="mt-2 text-gray-600">{error}</p>
+          <button
+            onClick={() => window.location.href = '/login'}
+            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+          >
+            Go to Login
+          </button>
+        </div>
       </div>
     );
   }
