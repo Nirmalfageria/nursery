@@ -14,7 +14,7 @@ export default function Dashboard() {
     const fetchUserData = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
         const response = await fetch('/api/me', {
           credentials: 'include',
@@ -36,7 +36,6 @@ export default function Dashboard() {
       } catch (error) {
         console.error('Dashboard error:', error);
         setError(error.message);
-        // Clear any invalid session
         document.cookie = 'session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         router.push('/login');
       } finally {
@@ -58,9 +57,7 @@ export default function Dashboard() {
       });
 
       if (response.ok) {
-        // Clear local state
         setUserData(null);
-        // Force a full reload to ensure all state is cleared
         window.location.href = '/login';
       } else {
         throw new Error('Logout failed');
@@ -73,21 +70,21 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-indigo-600 border-b-4"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-red-600">Error</h2>
-          <p className="mt-2 text-gray-600">{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-semibold text-red-600">Error</h2>
+          <p className="text-gray-600">{error}</p>
           <button
-            onClick={() => window.location.href = '/login'}
-            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+            onClick={() => router.push('/login')}
+            className="mt-2 px-5 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition"
           >
             Go to Login
           </button>
@@ -97,95 +94,72 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-lg font-semibold text-gray-900">Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              {userData && (
-                <span className="text-sm text-gray-700">
-                  Welcome, {userData.fullName || userData.username}
-                </span>
-              )}
-              <button
-                onClick={handleLogout}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Sign out
-              </button>
-            </div>
+    <div className="min-h-screen bg-gray-100">
+      <nav className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-indigo-700">Dashboard</h1>
+          <div className="flex items-center gap-4">
+            {userData && (
+              <span className="text-sm text-gray-700">
+                Hello, <span className="font-medium">{userData.fullName || userData.username}</span>
+              </span>
+            )}
+            <button
+              onClick={handleLogout}
+              className="text-sm text-red-600 hover:underline"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg p-6">
-            {userData ? (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900">Your Account</h2>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="px-4 py-5 sm:p-6">
-                      <h3 className="text-lg font-medium text-gray-900">Profile Information</h3>
-                      <div className="mt-4 space-y-4">
-                        <div>
-                          <p className="text-sm text-gray-500">Full Name</p>
-                          <p className="mt-1 text-sm text-gray-900">{userData.fullName}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Username</p>
-                          <p className="mt-1 text-sm text-gray-900">@{userData.username}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Email</p>
-                          <p className="mt-1 text-sm text-gray-900">{userData.email}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+      <main className="max-w-5xl mx-auto px-6 py-10">
+        <div className="bg-white shadow rounded-xl p-6">
+          {userData ? (
+            <div className="space-y-8">
+              <h2 className="text-2xl font-semibold text-gray-800">Account Details</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gray-50 rounded-lg p-4 border">
+                  <h3 className="text-lg font-semibold text-indigo-700 mb-3">Profile</h3>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li><strong>Full Name:</strong> {userData.fullName}</li>
+                    <li><strong>Username:</strong> @{userData.username}</li>
+                    <li><strong>Email:</strong> {userData.email}</li>
+                  </ul>
+                </div>
 
-                  <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="px-4 py-5 sm:p-6">
-                      <h3 className="text-lg font-medium text-gray-900">Account Actions</h3>
-                      <div className="mt-4 space-y-4">
-                        <Link
-                          href="/profile/edit"
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                          Edit Profile
-                        </Link>
-                        <button
-                          onClick={handleLogout}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                        >
-                          Sign Out
-                        </button>
-                      </div>
-                    </div>
+                <div className="bg-gray-50 rounded-lg p-4 border">
+                  <h3 className="text-lg font-semibold text-indigo-700 mb-3">Actions</h3>
+                  <div className="flex flex-col space-y-4">
+                    <Link
+                      href="/profile/edit"
+                      className="inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                    >
+                      Edit Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                 </div>
               </div>
-            ) : (
-              <div className="text-center">
-                <h3 className="text-lg font-medium text-gray-900">No user data available</h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Please sign in to access your dashboard
-                </p>
-                <div className="mt-6">
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Sign in
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold text-gray-800">No user data found</h3>
+              <p className="text-gray-600 mt-2">Please login to view your dashboard</p>
+              <Link
+                href="/login"
+                className="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              >
+                Go to Login
+              </Link>
+            </div>
+          )}
         </div>
       </main>
     </div>
