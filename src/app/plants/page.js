@@ -1,35 +1,31 @@
-'use client'
-import { useEffect, useState } from 'react';
+"use client";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/store/cardSlice"; // Import the action for adding to cart
 
 export default function Plants() {
   const [plants, setPlants] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [cart, setCart] = useState([]);
+  const dispatch = useDispatch(); // Use dispatch from Redux
 
+  // Fetch plant data
   useEffect(() => {
     const fetchPlants = async () => {
-      setIsLoading(true);
-      setError(null);
-
       try {
-        const response = await fetch('https://perenual.com/api/v2/species-list?key=sk-MTHv6801f098a38c19874'); 
-        if (!response.ok) {
-          throw new Error('Failed to fetch plant data');
-        }
+        setIsLoading(true);
+        const response = await fetch(
+          "https://perenual.com/api/v2/species-list?key=sk-MTHv6801f098a38c19874"
+        );
         const data = await response.json();
-        
-        console.log('API response:', data); // Debug: Log the whole API response
 
-        if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-          setPlants(data.data); // Set the plant data correctly
-          console.log('Plants data:', data.data); // Debug: Log the plant data
+        if (Array.isArray(data.data)) {
+          setPlants(data.data); // Set plants state
         } else {
-          setError('No plant data available');
+          setError("Invalid data format");
         }
-      } catch (error) {
-        console.error('Error fetching plants:', error);
-        setError('Failed to load plants');
+      } catch (err) {
+        setError("Failed to fetch plants");
       } finally {
         setIsLoading(false);
       }
@@ -38,72 +34,54 @@ export default function Plants() {
     fetchPlants();
   }, []);
 
-  const addToCart = (plant) => {
-    setCart((prevCart) => {
-      // Check if the plant is already in the cart
-      const existingPlant = prevCart.find((item) => item.id === plant.id);
-      if (existingPlant) {
-        // If the plant is already in the cart, increment the quantity
-        return prevCart.map((item) =>
-          item.id === plant.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        // If it's not in the cart, add the plant to the cart with quantity 1
-        return [...prevCart, { ...plant, quantity: 1 }];
-      }
-    });
+  // Add to cart function
+  const handleAddToCart = (plant) => {
+    const itemWithPrice = {
+      ...plant,
+      price: plant.id * 10, // ✅ consistent price logic
+      quantity: 1,
+    };
+
+    dispatch(addToCart(itemWithPrice));
+    alert(`${plant.common_name || "Plant"} added to cart!`);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-indigo-600 border-b-4"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-red-600">Error</h2>
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {plants.length > 0 ? (
-        plants.map((plant) => (
-          <div
-            key={plant.id}
-            className="bg-white p-3 rounded-lg shadow hover:shadow-md transition transform hover:scale-105"
-          >
-            <img 
-              src={plant.default_image?.medium_url} 
-              alt={plant.common_name} 
-              className="w-full h-48 object-cover rounded-t-lg" 
+    <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {plants.map((plant) => (
+        <div
+          key={plant.id}
+          className="bg-green-50 p-3 rounded-md shadow hover:shadow-lg transition"
+        >
+          {plant.default_image?.medium_url ? (
+            <img
+              src={plant.default_image.medium_url}
+              alt={plant.common_name || "Plant image"}
+              className="w-full h-40 object-cover rounded"
             />
-            <h3 className="font-semibold text-lg mt-4 text-green-800">{plant.common_name}</h3>
-            <p className="text-sm text-gray-500">{plant.scientific_name.join(', ')}</p>
-            <p className="text-sm text-gray-500">Family: {plant.family || 'Not available'}</p>
-            <p className="text-sm text-gray-500">Cultivar: {plant.cultivar || 'Not available'}</p>
-            <p className="text-xl font-semibold text-green-700 mt-2">${plant.price || 'Price not available'}</p>
+          ) : (
+            <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 rounded">
+              No Image
+            </div>
+          )}
 
-            {/* Add to Cart Button */}
-            <button 
-              onClick={() => addToCart(plant)} 
-              className="w-full mt-4 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-            >
-              Add to Cart
-            </button>
-          </div>
-        ))
-      ) : (
-        <div>No plants found</div>
-      )}
+          <h3 className="text-xl font-semibold mt-2 text-green-500">
+            {plant.common_name || "No Name"}
+          </h3>
+          <p className="text-gray-600 italic">{plant.scientific_name?.[0]}</p>
+          <p className="text-green-700 font-bold mt-1">₹{plant.id * 10}</p>
+
+          <button
+            onClick={() => handleAddToCart(plant)} // Add to cart on click
+            className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
+          >
+            Add to Cart
+          </button>
+        </div>
+      ))}
     </main>
   );
 }

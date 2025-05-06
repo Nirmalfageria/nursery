@@ -2,7 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import ReduxProvider from "@/redux/provider"; // Make sure path is correct
+import {ReduxProvider} from "../redux/provider"; // Make sure path is correct
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
