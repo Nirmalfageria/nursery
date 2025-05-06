@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   removeFromCart,
   updateCartQuantity,
+  clearCart
 } from "../../redux/store/cardSlice";
 import { placeOrder } from "./cartApi";
 
@@ -30,6 +31,7 @@ export default function Cart() {
       const result = await placeOrder(cartItems, router); // Call the placeOrder function, passing the router
       console.log("Order placed:", result);
       alert("Order placed successfully!");
+      dispatch(clearCart()); // ✅ Clear cart via Redux
       // Optionally, you can redirect to a confirmation page or update the UI here
     } catch (error) {
       console.error(error);

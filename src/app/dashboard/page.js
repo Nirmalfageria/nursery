@@ -138,12 +138,12 @@ export default function Dashboard() {
                 <div className="bg-gray-50 rounded-lg p-4 border">
                   <h3 className="text-lg font-semibold text-indigo-700 mb-3">Actions</h3>
                   <div className="flex flex-col space-y-4">
-                    <Link href="/profile/edit" className="inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                    {/* <Link href="/profile/edit" className="inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                       Edit Profile
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={handleLogout}
-                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                      className="px-1 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 width-300"
                     >
                       Sign Out
                     </button>

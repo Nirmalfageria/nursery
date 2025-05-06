@@ -1,15 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/store/cardSlice"; // Import the action for adding to cart
+import { addToCart } from "../../redux/store/cardSlice";
 
 export default function Plants() {
   const [plants, setPlants] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const dispatch = useDispatch(); // Use dispatch from Redux
+  const dispatch = useDispatch();
 
-  // Fetch plant data
   useEffect(() => {
     const fetchPlants = async () => {
       try {
@@ -20,7 +19,7 @@ export default function Plants() {
         const data = await response.json();
 
         if (Array.isArray(data.data)) {
-          setPlants(data.data); // Set plants state
+          setPlants(data.data);
         } else {
           setError("Invalid data format");
         }
@@ -34,11 +33,10 @@ export default function Plants() {
     fetchPlants();
   }, []);
 
-  // Add to cart function
   const handleAddToCart = (plant) => {
     const itemWithPrice = {
       ...plant,
-      price: plant.id * 10, // ✅ consistent price logic
+      price: plant.id * 10,
       quantity: 1,
     };
 
@@ -46,8 +44,15 @@ export default function Plants() {
     alert(`${plant.common_name || "Plant"} added to cart!`);
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error) return <p className="text-red-600 text-center mt-8">{error}</p>;
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -75,7 +80,7 @@ export default function Plants() {
           <p className="text-green-700 font-bold mt-1">₹{plant.id * 10}</p>
 
           <button
-            onClick={() => handleAddToCart(plant)} // Add to cart on click
+            onClick={() => handleAddToCart(plant)}
             className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
           >
             Add to Cart
