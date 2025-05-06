@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -6,10 +7,12 @@ import {
   updateCartQuantity,
 } from "../../redux/store/cardSlice";
 import { placeOrder } from "./cartApi";
+
 export default function Cart() {
   const cartItems = useSelector((state) => state.cart.items); // Access the cart items from Redux store
   const [isPlacingOrder, setIsPlacingOrder] = useState(false); // Handle order placing state
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // Handle quantity change (increment/decrement)
   const handleQuantityChange = (id, newQuantity) => {
@@ -20,16 +23,22 @@ export default function Cart() {
 
   // Handle placing the order (send cart data to backend)
   const handlePlaceOrder = async () => {
-    setIsPlacingOrder(true);
+ 
+    setIsPlacingOrder(true); // Indicate that the order is being placed
+  
     try {
-      const result = await placeOrder(cartItems); // ✅ Call directly
+      const result = await placeOrder(cartItems, router); // Call the placeOrder function, passing the router
       console.log("Order placed:", result);
       alert("Order placed successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to place the order.");
+      // Optionally, you can redirect to a confirmation page or update the UI here
+    } catch (error) {
+      console.error(error);
+      if (error.message === "Please login first") {
+        router.push("/login"); // Redirect to login page if not logged in
+      }
+      alert(error.message); // Display the error message to the user
     } finally {
-      setIsPlacingOrder(false);
+      setIsPlacingOrder(false); // Indicate that the order process has completed (whether successful or failed)
     }
   };
 

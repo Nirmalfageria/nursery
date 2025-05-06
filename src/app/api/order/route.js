@@ -1,51 +1,41 @@
-// src/pages/api/order.js
-import dbconnect from "../../../db/index";
-import { NextResponse } from "next/server";
-import Order from "../../../models/order.model"; // Make sure to create an Order model
-import { ObjectId } from "mongodb";
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+import dbconnect from '@/db/index';
+import Order from '@/models/order.model';
+import User from '@/models/user.model';
 
 export async function POST(request) {
   try {
-    // Get cart items from request body
-    const { cartItems } = await request.json();
+    const session = request.cookies.get('session')?.value;
 
-    if (!cartItems || cartItems.length === 0) {
-      return NextResponse.json(
-        { message: "No items in the cart", success: false },
-        { status: 400 }
-      );
+    if (!session) {
+      return NextResponse.json({ message: 'Unauthorized', success: false }, { status: 401 });
     }
 
-    await dbconnect(); // Connect to the database
+    await dbconnect();
 
-    // Create a new order
-    const order = new Order({
+    const user = await User.findById(session);
+    if (!user) {
+      return NextResponse.json({ message: 'Invalid session', success: false }, { status: 401 });
+    }
+
+    const { cartItems } = await request.json();
+
+    const newOrder = await Order.create({
       items: cartItems,
-      status: "Pending", // The status can be dynamic based on your workflow
-      createdAt: new Date(),
+      user: user._id,
     });
 
-    // Save the order to the database
-    const savedOrder = await order.save();
+    await newOrder.save();
 
-    return NextResponse.json(
-      { 
-        message: "Order placed successfully", 
-        success: true,
-        orderId: savedOrder._id // You can return the order ID
-      },
-      { status: 200 }
-    );
-    
+    return NextResponse.json({
+      message: 'Order placed successfully',
+      success: true,
+      orderId: newOrder._id,
+    });
+
   } catch (error) {
-    console.error("Order placement error:", error);
-    return NextResponse.json(
-      { 
-        message: "Error placing the order", 
-        success: false,
-        error: error.message 
-      },
-      { status: 500 }
-    );
+    console.error('Order placement error:', error);
+    return NextResponse.json({ message: 'Order failed', success: false, error: error.message }, { status: 500 });
   }
 }

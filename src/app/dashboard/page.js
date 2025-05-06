@@ -6,44 +6,55 @@ import Link from 'next/link';
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
+  const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserDataAndOrders = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await fetch('/api/me', {
+        // Fetch user data
+        const userRes = await fetch('/api/me', {
           credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         });
 
-        if (!response.ok) {
-          throw new Error(response.status === 401 ? 'Unauthorized' : 'Failed to fetch user data');
+        if (!userRes.ok) {
+          throw new Error(userRes.status === 401 ? 'Unauthorized' : 'Failed to fetch user data');
         }
 
-        const { user, success } = await response.json();
-        if (success) {
-          setUserData(user);
-        } else {
-          throw new Error('Invalid user data');
-        }
-      } catch (error) {
-        console.error('Dashboard error:', error);
-        setError(error.message);
+        const { user, success } = await userRes.json();
+        if (!success) throw new Error('Invalid user data');
+
+        setUserData(user);
+
+        // Fetch user's orders
+        const orderRes = await fetch('/api/orders', {
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        // if (!orderRes.ok) {
+        //   throw  ('Failed to fetch orders');
+        // }
+
+        const orderData = await orderRes.json();
+        setOrders(orderData.orders || []);
+      } catch (err) {
+        console.error('Dashboard error:', err);
+        setError(err.message);
         document.cookie = 'session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        router.push('/login');
+        // router.push('/login');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUserData();
+    fetchUserDataAndOrders();
   }, [router]);
 
   const handleLogout = async () => {
@@ -51,9 +62,7 @@ export default function Dashboard() {
       const response = await fetch('/api/logout', {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.ok) {
@@ -62,9 +71,9 @@ export default function Dashboard() {
       } else {
         throw new Error('Logout failed');
       }
-    } catch (error) {
-      console.error('Logout error:', error);
-      setError(error.message);
+    } catch (err) {
+      console.error('Logout error:', err);
+      setError(err.message);
     }
   };
 
@@ -104,17 +113,14 @@ export default function Dashboard() {
                 Hello, <span className="font-medium">{userData.fullName || userData.username}</span>
               </span>
             )}
-            <button
-              onClick={handleLogout}
-              className="text-sm text-red-600 hover:underline"
-            >
+            <button onClick={handleLogout} className="text-sm text-red-600 hover:underline">
               Logout
             </button>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto px-6 py-10">
+      <main className="max-w-5xl mx-auto px-6 py-10 space-y-10">
         <div className="bg-white shadow rounded-xl p-6">
           {userData ? (
             <div className="space-y-8">
@@ -132,10 +138,7 @@ export default function Dashboard() {
                 <div className="bg-gray-50 rounded-lg p-4 border">
                   <h3 className="text-lg font-semibold text-indigo-700 mb-3">Actions</h3>
                   <div className="flex flex-col space-y-4">
-                    <Link
-                      href="/profile/edit"
-                      className="inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                    >
+                    <Link href="/profile/edit" className="inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                       Edit Profile
                     </Link>
                     <button
@@ -152,13 +155,37 @@ export default function Dashboard() {
             <div className="text-center py-12">
               <h3 className="text-xl font-semibold text-gray-800">No user data found</h3>
               <p className="text-gray-600 mt-2">Please login to view your dashboard</p>
-              <Link
-                href="/login"
-                className="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-              >
+              <Link href="/login" className="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                 Go to Login
               </Link>
             </div>
+          )}
+        </div>
+
+        <div className="bg-white shadow rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
+          {orders.length === 0 ? (
+            <p className="text-gray-600">No orders found.</p>
+          ) : (
+            <ul className="space-y-4">
+              {orders.map((order) => (
+                <li key={order._id} className="border p-4 rounded-lg bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      {/* <h3 className="font-semibold text-indigo-700">Order ID: {order._id}</h3> */}
+                      <p className="text-sm text-gray-600">Status: {order.status}</p>
+                      <p className="text-sm text-gray-600">Placed on: {new Date(order.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <span className="text-sm text-gray-600">{order.items.length} item(s)</span>
+                  </div>
+                  <ul className="mt-3 text-sm text-gray-700 space-y-1 pl-4 list-disc">
+                    {order.items.map((item, i) => (
+                      <li key={i}>{item.common_name} (quantity:{item.quantity}) - ₹{item.price}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </main>
