@@ -55,7 +55,7 @@ export default function Plants() {
   if (error) return <p className="text-red-600 text-center mt-8">{error}</p>;
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-20">
       {plants.map((plant) => (
         <div
           key={plant.id}

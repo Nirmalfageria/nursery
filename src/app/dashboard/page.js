@@ -17,7 +17,6 @@ export default function Dashboard() {
       setError(null);
 
       try {
-        // Fetch user data
         const userRes = await fetch('/api/me', {
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -29,18 +28,12 @@ export default function Dashboard() {
 
         const { user, success } = await userRes.json();
         if (!success) throw new Error('Invalid user data');
-
         setUserData(user);
 
-        // Fetch user's orders
         const orderRes = await fetch('/api/orders', {
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
         });
-
-        // if (!orderRes.ok) {
-        //   throw  ('Failed to fetch orders');
-        // }
 
         const orderData = await orderRes.json();
         setOrders(orderData.orders || []);
@@ -48,7 +41,6 @@ export default function Dashboard() {
         console.error('Dashboard error:', err);
         setError(err.message);
         document.cookie = 'session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        // router.push('/login');
       } finally {
         setIsLoading(false);
       }
@@ -79,21 +71,21 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-indigo-600 border-b-4"></div>
+      <div className="min-h-screen flex items-center justify-center bg-green-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-600 border-b-4"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-green-50">
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-semibold text-red-600">Error</h2>
-          <p className="text-gray-600">{error}</p>
+          <p className="text-gray-700">{error}</p>
           <button
             onClick={() => router.push('/login')}
-            className="mt-2 px-5 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition"
+            className="mt-2 px-5 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition"
           >
             Go to Login
           </button>
@@ -103,10 +95,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-green-50">
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-indigo-700">Dashboard</h1>
+          <h1 className="text-xl font-bold text-green-700">Dashboard</h1>
           <div className="flex items-center gap-4">
             {userData && (
               <span className="text-sm text-gray-700">
@@ -124,10 +116,10 @@ export default function Dashboard() {
         <div className="bg-white shadow rounded-xl p-6">
           {userData ? (
             <div className="space-y-8">
-              <h2 className="text-2xl font-semibold text-gray-800">Account Details</h2>
+              <h2 className="text-2xl font-semibold text-green-800">Account Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gray-50 rounded-lg p-4 border">
-                  <h3 className="text-lg font-semibold text-indigo-700 mb-3">Profile</h3>
+                <div className="bg-green-50 rounded-lg p-4 border">
+                  <h3 className="text-lg font-semibold text-green-700 mb-3">Profile</h3>
                   <ul className="space-y-2 text-sm text-gray-700">
                     <li><strong>Full Name:</strong> {userData.fullName}</li>
                     <li><strong>Username:</strong> @{userData.username}</li>
@@ -135,19 +127,14 @@ export default function Dashboard() {
                   </ul>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-4 border">
-                  <h3 className="text-lg font-semibold text-indigo-700 mb-3">Actions</h3>
-                  <div className="flex flex-col space-y-4">
-                    {/* <Link href="/profile/edit" className="inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                      Edit Profile
-                    </Link> */}
-                    <button
-                      onClick={handleLogout}
-                      className="px-1 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 width-300"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
+                <div className="bg-green-50 rounded-lg p-4 border">
+                  <h3 className="text-lg font-semibold text-green-700 mb-3">Actions</h3>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                  >
+                    Sign Out
+                  </button>
                 </div>
               </div>
             </div>
@@ -155,7 +142,7 @@ export default function Dashboard() {
             <div className="text-center py-12">
               <h3 className="text-xl font-semibold text-gray-800">No user data found</h3>
               <p className="text-gray-600 mt-2">Please login to view your dashboard</p>
-              <Link href="/login" className="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+              <Link href="/login" className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
                 Go to Login
               </Link>
             </div>
@@ -163,16 +150,15 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
+          <h2 className="text-xl font-semibold text-green-800 mb-4">Order Summary</h2>
           {orders.length === 0 ? (
             <p className="text-gray-600">No orders found.</p>
           ) : (
             <ul className="space-y-4">
               {orders.map((order) => (
-                <li key={order._id} className="border p-4 rounded-lg bg-gray-50">
+                <li key={order._id} className="border p-4 rounded-lg bg-green-50">
                   <div className="flex justify-between items-center">
                     <div>
-                      {/* <h3 className="font-semibold text-indigo-700">Order ID: {order._id}</h3> */}
                       <p className="text-sm text-gray-600">Status: {order.status}</p>
                       <p className="text-sm text-gray-600">Placed on: {new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
@@ -180,7 +166,7 @@ export default function Dashboard() {
                   </div>
                   <ul className="mt-3 text-sm text-gray-700 space-y-1 pl-4 list-disc">
                     {order.items.map((item, i) => (
-                      <li key={i}>{item.common_name} (quantity:{item.quantity}) - ₹{item.price}</li>
+                      <li key={i}>{item.common_name} (quantity: {item.quantity}) - ₹{item.price}</li>
                     ))}
                   </ul>
                 </li>
