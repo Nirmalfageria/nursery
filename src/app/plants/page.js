@@ -1,92 +1,105 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/store/cardSlice";
+'use client';
 
-export default function Plants() {
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setAdmin } from '@/redux/store/adminSlice'; // adjust path as needed
+import Link from 'next/link';
+
+export default function PlantsPage() {
   const [plants, setPlants] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const isAdmin = useSelector((state) => state.admin.isAdmin);
   const dispatch = useDispatch();
 
+  // Rehydrate admin status from localStorage on mount
+  useEffect(() => {
+    const storedAdmin = localStorage.getItem('isAdmin');
+    if (storedAdmin === 'true') {
+      dispatch(setAdmin(true));
+    } else {
+      dispatch(setAdmin(false));
+    }
+  }, [dispatch]);
+
+  // Fetch plants
   useEffect(() => {
     const fetchPlants = async () => {
       try {
-        setIsLoading(true);
-        const response = await fetch(
-          "https://perenual.com/api/v2/species-list?key=sk-MTHv6801f098a38c19874"
-        );
-        const data = await response.json();
-
-        if (Array.isArray(data.data)) {
-          setPlants(data.data);
-        } else {
-          setError("Invalid data format");
-        }
+        const res = await fetch('/api/plants');
+        const data = await res.json();
+        setPlants(data);
       } catch (err) {
-        setError("Failed to fetch plants");
+        console.error('Error fetching plants:', err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
     fetchPlants();
   }, []);
 
-  const handleAddToCart = (plant) => {
-    const itemWithPrice = {
-      ...plant,
-      price: plant.id * 10,
-      quantity: 1,
-    };
-
-    dispatch(addToCart(itemWithPrice));
-    alert(`${plant.common_name || "Plant"} added to cart!`);
+  // Delete plant
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this plant?")) return;
+    try {
+      const res = await fetch(`/api/plants/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setPlants(plants.filter(p => p._id !== id));
+      }
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (error) return <p className="text-red-600 text-center mt-8">{error}</p>;
+  if (loading) return <p className="text-center mt-10">Loading plants...</p>;
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-20">
-      {plants.map((plant) => (
-        <div
-          key={plant.id}
-          className="bg-green-50 p-3 rounded-md shadow hover:shadow-lg transition"
-        >
-          {plant.default_image?.medium_url ? (
-            <img
-              src={plant.default_image.medium_url}
-              alt={plant.common_name || "Plant image"}
-              className="w-full h-40 object-cover rounded"
-            />
-          ) : (
-            <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 rounded">
-              No Image
+    <div className="min-h-screen bg-white p-4 pt-15">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-green-700 mb-6">🌿 Our Plants</h1>
+
+        {isAdmin && (
+          <Link href="/plants/add">
+            <button className="mb-6 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              ➕ Add New Plant
+            </button>
+          </Link>
+        )}
+
+        <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
+          {plants.map(plant => (
+            <div key={plant._id} className="bg-white border border-gray-200 p-4 rounded shadow">
+              <img
+                src={plant.imageUrl}
+                alt={plant.name}
+                className="w-full h-40 object-cover rounded mb-3"
+              />
+              <h2 className="text-xl font-semibold text-green-800">{plant.name}</h2>
+              <p className="text-sm text-gray-600">{plant.description}</p>
+              <p className="mt-1 font-medium text-gray-800">₹{plant.price}</p>
+              <p className="text-xs text-gray-500">Stock: {plant.stock}</p>
+
+              {isAdmin && (
+                <div className="mt-3 flex gap-2">
+                  <Link href={`/plants/edit/${plant._id}`}>
+                    <button className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                      Edit
+                    </button>
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(plant._id)}
+                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-
-          <h3 className="text-xl font-semibold mt-2 text-green-500">
-            {plant.common_name || "No Name"}
-          </h3>
-          <p className="text-gray-600 italic">{plant.scientific_name?.[0]}</p>
-          <p className="text-green-700 font-bold mt-1">₹{plant.id * 10}</p>
-
-          <button
-            onClick={() => handleAddToCart(plant)}
-            className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
-          >
-            Add to Cart
-          </button>
+          ))}
         </div>
-      ))}
-    </main>
+      </div>
+    </div>
   );
 }

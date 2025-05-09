@@ -46,8 +46,16 @@ export default function LoginPage() {
         setErrors({ form: data.message });
         return;
       }
-
-      dispatch(setAdmin(data.role === "admin")); // Set admin status in global state
+      // console.log(data)
+      // console.log(data.user.role)
+      if (data.user.role === 'admin') {
+        dispatch(setAdmin(true));
+        localStorage.setItem('isAdmin', 'true'); // Optional: persist
+      } else {
+        dispatch(setAdmin(false));
+        localStorage.setItem('isAdmin', 'false');
+      }
+       // Set admin status in global state
       router.push("/dashboard");
     } catch {
       setErrors({ form: "Network error. Please try again." });

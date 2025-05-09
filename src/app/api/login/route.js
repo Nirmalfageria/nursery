@@ -40,7 +40,8 @@ export async function POST(request) {
           id: user._id,
           fullName: user.fullName,
           username: user.username,
-          email: user.email
+          email: user.email,
+          role:user.role
         }
       },
       { status: 200 }
