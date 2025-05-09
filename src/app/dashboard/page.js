@@ -124,6 +124,7 @@ export default function Dashboard() {
                     <li><strong>Full Name:</strong> {userData.fullName}</li>
                     <li><strong>Username:</strong> @{userData.username}</li>
                     <li><strong>Email:</strong> {userData.email}</li>
+                    <li><strong>Role:</strong> {userData.role}</li>
                   </ul>
                 </div>
 

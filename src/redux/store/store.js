@@ -1,10 +1,11 @@
-// src/redux/store/store.js
 import { configureStore } from '@reduxjs/toolkit';
 import { cartReducer } from './cardSlice';
+import { adminReducer } from './adminSlice';
 
 const store = configureStore({
   reducer: {
-    cart: cartReducer, // <- Make sure this matches the key you use in useSelector
+    cart: cartReducer,
+    admin: adminReducer,
   },
 });
 
