@@ -1,11 +1,11 @@
 // src/app/cart/cartApi.js
-export const placeOrder = async (cartItems, router) => {
-  const response = await fetch('/api/order', {
-    method: 'POST',
+export const placeOrder = async (cartItems,address, router) => {
+  const response = await fetch("/api/order", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ cartItems }),
+    body: JSON.stringify({ cartItems, address }),
   });
 
   // Check if the response is not OK
@@ -13,10 +13,10 @@ export const placeOrder = async (cartItems, router) => {
     const responseData = await response.json();
 
     // Check if the error is due to not being logged in (Unauthorized)
-    if (responseData.message === 'Unauthorized') {
-      throw new Error('Please login first');
+    if (responseData.message === "Unauthorized") {
+      throw new Error("Please login first");
     } else {
-      throw new Error('Failed to place the order');
+      throw new Error("Failed to place the order");
     }
   }
 

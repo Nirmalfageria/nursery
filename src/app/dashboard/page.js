@@ -42,6 +42,7 @@ export default function Dashboard() {
 
         const orderData = await orderRes.json();
         setOrders(orderData.orders || []);
+        // console.log(orderData)
       } catch (err) {
         console.error("Dashboard error:", err);
         setError(err.message);
@@ -209,8 +210,9 @@ export default function Dashboard() {
                         {new Date(order.createdAt).toLocaleDateString()}
                       </p>
                     </div>
+                  
                     <span className="text-sm text-gray-600">
-                      {order.items.length} item(s)
+                      {order.address.street},{order.address.city},{order.address.pincode}
                     </span>
                   </div>
                   <ul className="mt-3 text-sm text-gray-700 space-y-1 pl-4 list-disc">

@@ -1,4 +1,3 @@
-// models/order.model.js
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
@@ -15,6 +14,13 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: 'Pending',
   },
+  address: {
+    street: { type: String, required: true },
+    city:{type:String,required:true},
+    state:{type:String,required:true},
+    pincode: { type: String, required: true },
+  },
+  
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
