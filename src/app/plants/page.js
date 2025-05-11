@@ -1,24 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Link from 'next/link';
-import Image from 'next/image';
+
 export default function PlantsPage() {
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
   const isAdmin = useSelector((state) => state.admin.isAdmin);
-  // const dispatch = useDispatch();
 
-
-  // Fetch plants
+  // Fetch all plants
   useEffect(() => {
     const fetchPlants = async () => {
       try {
         const res = await fetch('/api/plants');
         const data = await res.json();
         setPlants(data);
-        console.log(isAdmin)
       } catch (err) {
         console.error('Error fetching plants:', err);
       } finally {
@@ -28,26 +25,23 @@ export default function PlantsPage() {
 
     fetchPlants();
   }, []);
-//edit 
-// const handleEdit = async(id)=>{
-//   try{
-    
-//   }
-// }
+
   // Delete plant
   const handleDelete = async (id) => {
-    // if (!confirm("Are you sure you want to delete this plant?")) return;
+    if (!confirm("Are you sure you want to delete this plant?")) return;
     try {
-      const res = await fetch(`/api/delete`, {
+      const res = await fetch(`/api/plants/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id }),
+        
       });
-      console.log(res)
+
       if (res.ok) {
-        setPlants(plants.filter(p => p._id !== id));
+        setPlants((prev) => prev.filter(p => p._id !== id));
+      } else {
+        console.error("Delete failed with status:", res.status);
       }
     } catch (err) {
       console.error("Delete failed:", err);
@@ -70,9 +64,9 @@ export default function PlantsPage() {
         )}
 
         <div className="grid md:grid-cols-6 sm:grid-cols-4 gap-6">
-          {plants.map(plant => (
-            <div key={plant._id} className="bg-white border border-gray-200  pb-1 rounded shadow">
-             <img
+          {plants.map((plant) => (
+            <div key={plant._id} className="bg-white border border-gray-200 pb-1 rounded shadow">
+              <img
                 src={plant.imageUrl}
                 alt={plant.name}
                 className="w-full h-40 object-contain"
