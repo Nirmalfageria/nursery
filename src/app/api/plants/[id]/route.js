@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
   await dbconnect();
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const plant = await Plant.findById(id);

@@ -8,7 +8,7 @@ export async function POST() {
       { status: 200 }
     );
 
-    // Clear the session cookie
+    // Clear the session cookie on the server side
     response.cookies.set('session', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
