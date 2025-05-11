@@ -1,16 +1,18 @@
 import dbconnect from "../../../db/index";
-import Plant from '../../../models/plants.model';
+import Plant from "../../../models/plants.model";
 
+// Get all plants
 export async function GET() {
   try {
     await dbconnect();
     const plants = await Plant.find();
     return Response.json(plants);
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch plants' }, { status: 500 });
+    return Response.json({ error: "Failed to fetch plants" }, { status: 500 });
   }
 }
 
+// Create a new plant
 export async function POST(req) {
   try {
     await dbconnect();
@@ -18,6 +20,8 @@ export async function POST(req) {
     const newPlant = await Plant.create(body);
     return Response.json(newPlant, { status: 201 });
   } catch (error) {
-    return Response.json({ error: 'Failed to add plant' }, { status: 500 });
+    return Response.json({ error: "Failed to add plant" }, { status: 500 });
   }
 }
+
+

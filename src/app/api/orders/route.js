@@ -7,8 +7,7 @@ import User from '@/models/user.model';
 export async function GET(request) {
   try {
     // Extract session ID from cookies
-    const cookieStore = cookies();
-    const session = cookieStore.get('session')?.value;
+    const session = request.cookies.get('session')?.value;
 
     if (!session) {
       return NextResponse.json({ message: 'Unauthorized', success: false }, { status: 401 });

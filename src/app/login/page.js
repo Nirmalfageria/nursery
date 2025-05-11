@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useDispatch } from 'react-redux';
-import { setAdmin } from '../../redux/store/adminSlice'; 
-
+import { useDispatch } from "react-redux";
+import { setAdmin } from "../../redux/store/adminSlice";
+import Cookies from "js-cookie";
 export default function LoginPage() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [errors, setErrors] = useState({});
@@ -26,43 +26,44 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    setIsLoading(true);
 
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: formData.username.toLowerCase(),
-          password: formData.password,
-        }),
-      });
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
+  setIsLoading(true);
 
-      const data = await response.json();
-      if (!response.ok) {
-        setErrors({ form: data.message });
-        return;
-      }
-      // console.log(data)
-      // console.log(data.user.role)
-      if (data.user.role === 'admin') {
-        dispatch(setAdmin(true));
-        localStorage.setItem('isAdmin', 'true'); // Optional: persist
-      } else {
-        dispatch(setAdmin(false));
-        localStorage.setItem('isAdmin', 'false');
-      }
-       // Set admin status in global state
-      router.push("/dashboard");
-    } catch {
-      setErrors({ form: "Network error. Please try again." });
-    } finally {
-      setIsLoading(false);
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: formData.username.toLowerCase(),
+        password: formData.password,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      setErrors({ form: data.message });
+      return;
     }
-  };
+
+    // ✅ Set Redux state for admin
+    const isAdmin = data.user.role === "admin"; // Adjust according to your API
+    dispatch(setAdmin(isAdmin));
+
+    // ✅ Set cookie to persist admin login
+    Cookies.set("isAdmin", isAdmin ? "true" : "false");
+
+    // ✅ Redirect to dashboard
+    router.push("/dashboard");
+  } catch {
+    setErrors({ form: "Network error. Please try again." });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-green-50 flex flex-col justify-center items-center px-6">
