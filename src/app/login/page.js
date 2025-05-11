@@ -141,7 +141,7 @@ const handleSubmit = async (e) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition disabled:opacity-50"
+            className="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition disabled:opacity-50 cursor-pointer"
           >
             {isLoading ? "Signing in..." : "Sign in"}
           </button>
@@ -151,7 +151,7 @@ const handleSubmit = async (e) => {
           Don’t have an account?{" "}
           <Link
             href="/signup"
-            className="text-green-700 font-medium hover:underline"
+            className="text-green-700 font-medium underline"
           >
             Sign up
           </Link>

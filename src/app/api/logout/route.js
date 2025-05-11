@@ -2,18 +2,25 @@ import { NextResponse } from 'next/server';
 
 export async function POST() {
   try {
-    // Create response with success message
     const response = NextResponse.json(
       { message: 'Logout successful', success: true },
       { status: 200 }
     );
 
-    // Clear the session cookie on the server side
+    // Clear the session cookie
     response.cookies.set('session', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      expires: new Date(0) // Expire immediately
+      expires: new Date(0),
+    });
+
+    // ✅ Clear the isAdmin cookie too
+    response.cookies.set('isAdmin', '', {
+      httpOnly: false, // You likely set this from the client, so it shouldn't be httpOnly
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: new Date(0),
     });
 
     return response;
