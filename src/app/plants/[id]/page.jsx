@@ -49,7 +49,7 @@ const PlantDetailPage = ({ params }) => {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/plants/${plantId}`, {
+      const res = await fetch(`/api/plants/${plantId}`, {
         method: 'DELETE',
       });
 
