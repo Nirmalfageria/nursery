@@ -1,8 +1,7 @@
 'use client';
-
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingCart, LayoutDashboard, Leaf } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
@@ -12,32 +11,42 @@ export default function Navbar() {
     <nav className="bg-green-700 text-white px-4 py-3 shadow-md absolute w-full z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold">
-          🌱 Nursery
+        <Link href="/" className="flex items-center gap-2 text-2xl font-bold">
+          <Leaf size={28} />
+          Nursery
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex space-x-6 font-medium">
-          {['/', '/plants', '/services', '/cart', '/dashboard'].map((path, index) => (
-            <Link
-              key={index}
-              href={path}
-              className="transition duration-200 hover:text-green-200"
-            >
-              {path === '/' ? 'Home' : path.slice(1).charAt(0).toUpperCase() + path.slice(2)}
-            </Link>
-          ))}
+        {/* Desktop Links with Icons */}
+        <div className="hidden md:flex space-x-6 font-medium items-center">
+          <Link href="/" className="hover:text-green-200">Home</Link>
+          <Link href="/plants" className="hover:text-green-200">Plants</Link>
+          <Link href="/services" className="hover:text-green-200">Services</Link>
+
+          {/* Cart Icon */}
+          <Link href="/cart" className="hover:text-green-200 flex items-center gap-1">
+            <ShoppingCart size={20} />
+            <span>Cart</span>
+          </Link>
+
+          {/* Dashboard Icon */}
+          <Link href="/dashboard" className="hover:text-green-200 flex items-center gap-1">
+            <LayoutDashboard size={20} />
+            <span>Dashboard</span>
+          </Link>
         </div>
 
-        {/* Hamburger Icon */}
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)}>
+        {/* Mobile Cart + Hamburger */}
+        <div className="md:hidden flex items-center gap-4">
+          <Link href="/cart" aria-label="Cart">
+            <ShoppingCart size={24} className="hover:text-green-200" />
+          </Link>
+          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu">
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* Animated Mobile Menu */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -47,7 +56,7 @@ export default function Navbar() {
             transition={{ duration: 0.3, delay: 0.1 }}
             className="md:hidden mt-2 text-center font-medium overflow-hidden"
           >
-            {['/', '/plants', '/services', '/cart', '/dashboard'].map((path, index) => (
+            {['/', '/plants', '/services', '/dashboard'].map((path, index) => (
               <motion.div
                 key={path}
                 initial={{ opacity: 0, y: -10 }}

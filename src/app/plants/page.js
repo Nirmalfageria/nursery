@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
-
+import styles from './plants.module.css';
 export default function PlantsPage() {
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,8 +51,8 @@ export default function PlantsPage() {
 else{
   return (
     <div className="min-h-screen bg-white  px-4 pt-15">
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-3xl font-bold text-green-700 mb-6">🌱 Our Plants</h1>
+      <div className="max-w-4xl mx-auto text-center justify-items-center align-center">
+        <h1 className="text-3xl font-bold text-green-700 mb-6">Our Plants</h1>
 
         {isAdmin && (
           <Link href="/plants/add">
@@ -62,10 +62,10 @@ else{
           </Link>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6 rounded-lg justify-items-center ">
+        <div className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 rounded-lg justify-items-center ${styles.plantGrid}`}>
           {plants.map((plant) => (
-            <div key={plant._id} className="P-1 text-center w-full max-w-xs bg-white shadow">
-            <img src={plant.imageUrl} alt={plant.name} className="w-full h-45 object-fill rounded-lg" />
+            <div key={plant._id} className="p-1  justify-items-center flex flex-col text-center w-full max-w-xs bg-white shadow">
+            <img src={plant.imageUrl} alt={plant.name} className="w-full h-35 sm:h-40 object-fill rounded-lg" />
 
               <h2 className="text-lg font-semibold text-green-800">{plant.name}</h2>
               <p className="text-gray-700 font-medium">₹{plant.price}</p>
