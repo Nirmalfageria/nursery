@@ -140,7 +140,7 @@ export default function Dashboard() {
                   <h3 className="text-lg font-semibold text-green-700 mb-3">
                     Profile
                   </h3>
-                  <ul className="space-y-2 text-sm text-gray-700">
+                  <ul className="space-y-2 text-sm text-gray-700 break-words">
                     <li>
                       <strong>Full Name:</strong> {userData.fullName}
                     </li>
@@ -198,9 +198,9 @@ export default function Dashboard() {
               {orders.map((order) => (
                 <li
                   key={order._id}
-                  className="border p-4 rounded-lg bg-green-50"
+                  className="border p-4 rounded-lg bg-green-50 break-words"
                 >
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col justify-between items-center sm:flex-row">
                     <div>
                       <p className="text-sm text-gray-600">
                         Status: {order.status}
@@ -215,7 +215,7 @@ export default function Dashboard() {
                       {order.address.street},{order.address.city},{order.address.pincode}
                     </span>
                   </div>
-                  <ul className="mt-3 text-sm text-gray-700 space-y-1 pl-4 list-disc">
+                  <ul className="mt-3 text-sm text-gray-700 space-y-1 pl-4 list-disc break-words">
                     {order.items.map((item, i) => (
                       <li key={i}>
                         {item.common_name} (quantity: {item.quantity}) - ₹
