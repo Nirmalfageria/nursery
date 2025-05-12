@@ -19,7 +19,7 @@ const PlantDetailPage = ({ params }) => {
   useEffect(() => {
     const fetchPlant = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/plants/${id}`, {
+        const res = await fetch(`/api/plants/${id}`, {
           cache: 'no-store',
         });
 
