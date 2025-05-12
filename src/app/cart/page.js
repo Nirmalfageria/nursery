@@ -1,4 +1,5 @@
-"use client";
+"use client";import styles from "../plants/plants.module.css";
+
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,13 +62,13 @@ export default function Cart() {
         <p>Your cart is empty!</p>
       ) : (
         <div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6 rounded-lg">
+          <div className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 rounded-lg justify-items-center ${styles.cartGrid}`}>
             {cartItems.map((item) => (
               <div key={item.id} className="bg-white rounded-lg shadow">
                 <img
                   src={item.imageUrl}
                   alt={item.common_name || "Plant image"}
-                  className="w-full h-40 object-fill rounded-lg"
+                  className="w-full h-35 object-fill rounded-lg"
                 />
                 <h3 className="font-semibold text-lg text-center">{item.name}</h3>
                 <p className="text-center">Price: ₹{item.price}</p>

@@ -36,11 +36,11 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Cart + Hamburger */}
-        <div className="md:hidden flex items-center gap-4">
+        <div className="md:hidden flex items-center gap-4 cursor-pointer">
           <Link href="/cart" aria-label="Cart">
             <ShoppingCart size={24} className="hover:text-green-200" />
           </Link>
-          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu">
+          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu " className=' cursor-pointer'>
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>

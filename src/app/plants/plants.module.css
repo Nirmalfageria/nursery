@@ -21,3 +21,14 @@
    
 }
 }
+.cartGrid img {
+    @media(max-width:400px) {
+        height: calc(var(--spacing)* 32);
+    }
+    
+}
+.cartGrid{
+    @media(max-width:350px) {
+        grid-template-columns: 1fr;
+      }
+}
