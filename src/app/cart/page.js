@@ -73,21 +73,21 @@ export default function Cart() {
                 <p className="text-center">Price: ₹{item.price}</p>
                 <div className="flex items-center justify-center w-full">
                   <button
-                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                    onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
                     className="px-2 py-1 bg-gray-300 rounded cursor-pointer flex items-center"
                   >
                     -
                   </button>
                   <span className="px-2">{item.quantity}</span>
                   <button
-                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                    onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
                     className="px-2 py-1 bg-gray-300 rounded cursor-pointer"
                   >
                     +
                   </button>
                 </div>
                 <button
-                  onClick={() => dispatch(removeFromCart(item.id))}
+                  onClick={() => dispatch(removeFromCart(item._id))}
                   className="flex items-center justify-center w-full mt-1 text-red-600 hover:underline cursor-pointer text-center"
                 >
                   Remove
