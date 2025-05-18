@@ -1,11 +1,15 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Menu, X, ShoppingCart, LayoutDashboard, Leaf } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const cartCount = useSelector((state) =>
+    state.cart.items.reduce((total, item) => total + item.quantity, 0)
+  );
 
   return (
     <nav className="bg-green-700 text-white px-4 py-3 shadow-md absolute w-full z-50">
@@ -22,10 +26,15 @@ export default function Navbar() {
           <Link href="/plants" className="hover:text-green-200">Plants</Link>
           <Link href="/services" className="hover:text-green-200">Services</Link>
 
-          {/* Cart Icon */}
-          <Link href="/cart" className="hover:text-green-200 flex items-center gap-1">
+          {/* Cart Icon with Badge */}
+          <Link href="/cart" className="relative hover:text-green-200 flex items-center gap-1">
             <ShoppingCart size={20} />
             <span>Cart</span>
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
           {/* Dashboard Icon */}
@@ -37,10 +46,15 @@ export default function Navbar() {
 
         {/* Mobile Cart + Hamburger */}
         <div className="md:hidden flex items-center gap-4 cursor-pointer">
-          <Link href="/cart" aria-label="Cart">
+          <Link href="/cart" className="relative" aria-label="Cart">
             <ShoppingCart size={24} className="hover:text-green-200" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
-          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu " className=' cursor-pointer'>
+          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu">
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
