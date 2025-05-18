@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import {ReduxProvider} from "../redux/provider"; // Make sure path is correct
 import WhatsappButton from "./components/WhastappButton";
+import HydrateAdmin from "./components/HydrateAdmin";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ReduxProvider>
+          <HydrateAdmin />
           <Navbar />
           {children}
           <WhatsappButton />

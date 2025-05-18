@@ -82,7 +82,7 @@ const PlantDetailPage = ({ params }) => {
     <div className="flex justify-center items-center p-6 max-w-4xl mx-auto pt-15">
       <div className="relative rounded-lg shadow-md p-6 flex w-full flex-col md:flex-row ">
         <div className="w-full md:w-1/2 flex justify-center items-center">
-        <Image
+          <Image
             src={plant.imageUrl || "/fallback.jpg"}
             alt={plant.name}
             width={300}
@@ -104,11 +104,18 @@ const PlantDetailPage = ({ params }) => {
           <p className="text-sm text-gray-500 mb-1">
             Category: {plant.category}
           </p>
-          <p className="text-sm text-gray-500 mb-4">In stock: {plant.stock}</p>
+          <p className={`text-sm mb-4 ${plant.stock > 0 ? "text-green-500" : "text-red-500"}`}>
+            {plant.stock > 0 ? "In Stock" : "Out of Stock"}
+          </p>
 
           <button
-            className="bg-green-700 text-white py-2 px-6 rounded hover:bg-green-800 cursor-pointer"
+            className={`py-2 px-6 rounded  ${
+              plant.stock === 0
+                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                : "bg-green-700 text-white hover:bg-green-800 cursor-pointer"
+            }`}
             onClick={() => handleAddToCart(plant)}
+            disabled={plant.stock === 0}
           >
             Add to Cart
           </button>

@@ -48,55 +48,63 @@ export default function PlantsPage() {
   } else {
     return (
       <div className="min-h-screen bg-white  px-4 pt-15">
-        <div className="max-w-4xl mx-auto text-center justify-items-center align-center">
-          <h1 className="text-3xl font-bold text-green-700 mb-6">Our Plants</h1>
+      <div className="max-w-4xl mx-auto text-center justify-items-center align-center">
+        <h1 className="text-3xl font-bold text-green-700 mb-6">Our Plants</h1>
 
-          {isAdmin && (
-            <Link href="/plants/add">
-              <button className="mb-6 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer  ">
-                ➕ Add New Plant
-              </button>
-            </Link>
-          )}
+        {isAdmin && (
+        <Link href="/plants/add">
+          <button className="mb-6 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer  ">
+          ➕ Add New Plant
+          </button>
+        </Link>
+        )}
 
+        <div
+        className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 rounded-lg justify-items-center ${styles.plantGrid}`}
+        >
+        {plants.map((plant) => (
           <div
-            className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 rounded-lg justify-items-center ${styles.plantGrid}`}
+          key={plant._id}
+          className="p-1  justify-items-center flex flex-col text-center w-full max-w-xs bg-white shadow"
           >
-            {plants.map((plant) => (
-              <div
-                key={plant._id}
-                className="p-1  justify-items-center flex flex-col text-center w-full max-w-xs bg-white shadow"
-              >
-                <img
-                  src={plant.imageUrl}
-                  alt={plant.name}
-                  className="w-full h-35 sm:h-40 object-fill rounded-lg"
-                />
+          <img
+            src={plant.imageUrl}
+            alt={plant.name}
+            className="w-full h-35 sm:h-40 object-fill rounded-lg"
+          />
 
-                <h2 className="text-lg font-semibold text-green-800">
-                  {plant.name}
-                </h2>
-                <p className="text-gray-700 font-medium">₹{plant.price}</p>
+          <h2 className="text-lg font-semibold text-green-800">
+            {plant.name}
+          </h2>
+          <p className="text-gray-700 font-medium">₹{plant.price}</p>
+          <p className={`text-sm ${plant.stock ? "text-green-600" : "text-red-600"}`}>
+            {plant.stock ? "Available" : "Out of Stock"}
+          </p>
 
-                <div className="flex gap-2 w-full mt-1">
-                  <Link href={`/plants/${plant._id}`} className="w-full">
-                    <button className="bg-blue-500 text-white w-full px-3  rounded hover:bg-blue-600 text-sm cursor-pointer">
-                      View Product
-                    </button>
-                  </Link>
+          <div className="flex gap-2 w-full mt-1">
+            <Link href={`/plants/${plant._id}`} className="w-full">
+            <button className="bg-blue-500 text-white w-full px-3  rounded hover:bg-blue-600 text-sm cursor-pointer">
+              View Product
+            </button>
+            </Link>
 
-                  <button
-                    onClick={() => handleAddToCart(plant)}
-                    className="bg-green-500 text-white px-3  rounded hover:bg-green-600 text-sm flex items-center justify-center cursor-pointer" 
-                    title="Add to Cart"
-                  >
-                    <FaCartPlus className="text-white text-lg" />
-                  </button>
-                </div>
-              </div>
-            ))}
+            <button
+            onClick={() => handleAddToCart(plant)}
+            className={`px-3 rounded text-sm flex items-center justify-center  ${
+              plant.stock
+              ? "bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+              : "bg-gray-400 text-gray-700 cursor-not-allowed"
+            }`}
+            title={plant.stock ? "Add to Cart" : "Out of Stock"}
+            disabled={!plant.stock}
+            >
+            <FaCartPlus className="text-lg" />
+            </button>
           </div>
+          </div>
+        ))}
         </div>
+      </div>
       </div>
     );
   }

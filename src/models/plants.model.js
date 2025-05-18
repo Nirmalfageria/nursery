@@ -23,7 +23,7 @@ const plantSchema = new Schema({
     required: true
   },
   stock: {
-    type: Number,
+    type: Boolean,
     required: true // Available quantity
   }
 }, { timestamps: true });
