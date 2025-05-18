@@ -6,14 +6,22 @@ import bcrypt from "bcrypt";
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { fullName, username, email, password } = body;
-
-    if (!fullName || !username || !email || !password) {
+    const { fullName, username, email, phoneNumber, password } = body;
+    console.log(fullName,username,email, phoneNumber, password);
+    if (!fullName || !username || !password) {
       return NextResponse.json(
-        { message: "All fields are required", success: false },
+        { message: "Full Name, Username, and Password are required", success: false },
         { status: 400 }
       );
     }
+    
+    if (!email && !phoneNumber) {
+      return NextResponse.json(
+        { message: "Either Email or Phone number is required", success: false },
+        { status: 400 }
+      );
+    }
+    
 
     await dbconnect();
     console.log("db is connected");
@@ -21,17 +29,23 @@ export async function POST(request) {
     const existingUser = await User.findOne({
       $or: [
         { username: username.toLowerCase() },
-        { email: email.toLowerCase() }
-      ]
+        { email: email.toLowerCase() },
+        { phoneNumber: phoneNumber },
+      ],
     });
 
     if (existingUser) {
       return NextResponse.json(
         {
-          message: existingUser.username === username.toLowerCase()
-            ? "Username already taken"
-            : "Email already registered",
-          success: false
+          message:
+            existingUser.username === username.toLowerCase()
+              ? "Username already taken"
+              : existingUser.email === email.toLowerCase()
+                ? "Email already registered"
+                : existingUser.phoneNumber === phoneNumber
+                  ? "Phone number already registered"
+                  : "Unknown error",
+          success: false,
         },
         { status: 409 }
       );
@@ -43,11 +57,13 @@ export async function POST(request) {
     const newUser = new User({
       fullName,
       username: username.toLowerCase(),
-      email: email.toLowerCase(),
       password: hashedPassword,
       role: "user",
-      isVerified: false
+      isVerified: false,
+      ...(email ? { email: email.toLowerCase() } : {}),
+      ...(phoneNumber ? { phoneNumber } : {}),
     });
+    
 
     const savedUser = await newUser.save();
 
@@ -59,19 +75,18 @@ export async function POST(request) {
           id: savedUser._id,
           fullName: savedUser.fullName,
           username: savedUser.username,
-          email: savedUser.email
-        }
+          email: savedUser.email,
+        },
       },
       { status: 201 }
     );
-
   } catch (error) {
     console.error("Signup error:", error);
     return NextResponse.json(
       {
         message: "Error during registration",
         success: false,
-        error: error.message
+        error: error.message,
       },
       { status: 500 }
     );

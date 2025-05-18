@@ -34,7 +34,7 @@ export default function Dashboard() {
         const { user, success } = await userRes.json();
         if (!success) throw new Error("Invalid user data");
         setUserData(user);
-
+// console.log(user)
         const orderRes = await fetch("/api/orders", {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -151,7 +151,13 @@ export default function Dashboard() {
                       <strong>Email:</strong> {userData.email}
                     </li>
                     <li>
+                      <strong>Mobile:</strong> {userData.phoneNumber}
+                    </li>
+                    <li>
                       <strong>Role:</strong> {userData.role}
+                    </li>
+                    <li>
+                      <strong>Verified:</strong> {userData.verified ? "Yes" : "No"}
                     </li>
                   </ul>
                 </div>
