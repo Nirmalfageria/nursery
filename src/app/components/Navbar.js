@@ -1,9 +1,9 @@
-'use client';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Menu, X, ShoppingCart, LayoutDashboard, Leaf } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { Menu, X, ShoppingCart, LayoutDashboard, Leaf } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,12 +22,23 @@ export default function Navbar() {
 
         {/* Desktop Links with Icons */}
         <div className="hidden md:flex space-x-6 font-medium items-center">
-          <Link href="/" className="hover:text-green-200">Home</Link>
-          <Link href="/plants" className="hover:text-green-200">Plants</Link>
-          <Link href="/services" className="hover:text-green-200">Services</Link>
-
+          <Link href="/" className="hover:text-green-200">
+            Home
+          </Link>
+          <Link href="/plants" className="hover:text-green-200">
+            Plants
+          </Link>
+          <Link href="/services" className="hover:text-green-200">
+            Services
+          </Link>
+          <Link href="/pots" className="hover:text-green-200">
+            Pots
+          </Link>
           {/* Cart Icon with Badge */}
-          <Link href="/cart" className="relative hover:text-green-200 flex items-center gap-1">
+          <Link
+            href="/cart"
+            className="relative hover:text-green-200 flex items-center gap-1"
+          >
             <ShoppingCart size={20} />
             <span>Cart</span>
             {cartCount > 0 && (
@@ -38,7 +49,10 @@ export default function Navbar() {
           </Link>
 
           {/* Dashboard Icon */}
-          <Link href="/dashboard" className="hover:text-green-200 flex items-center gap-1">
+          <Link
+            href="/dashboard"
+            className="hover:text-green-200 flex items-center gap-1"
+          >
             <LayoutDashboard size={20} />
             <span>Dashboard</span>
           </Link>
@@ -65,12 +79,12 @@ export default function Navbar() {
         {isOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
             className="md:hidden mt-2 text-center font-medium overflow-hidden"
           >
-            {['/', '/plants', '/services', '/dashboard'].map((path, index) => (
+            {["/", "/plants", "/services",'/pots', "/dashboard"].map((path, index) => (
               <motion.div
                 key={path}
                 initial={{ opacity: 0, y: -10 }}
@@ -82,7 +96,9 @@ export default function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className="block py-2 hover:text-green-200 transition"
                 >
-                  {path === '/' ? 'Home' : path.slice(1).charAt(0).toUpperCase() + path.slice(2)}
+                  {path === "/"
+                    ? "Home"
+                    : path.slice(1).charAt(0).toUpperCase() + path.slice(2)}
                 </Link>
               </motion.div>
             ))}

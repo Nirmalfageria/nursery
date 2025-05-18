@@ -23,6 +23,7 @@ export default function PlantsPage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setPlants(data);
+        // console.log(data);
       } catch (err) {
         console.error("Error fetching plants:", err);
       } finally {
@@ -78,6 +79,7 @@ export default function PlantsPage() {
           </h2>
           <p className="text-gray-700 font-medium">₹{plant.price}</p>
           <p className={`text-sm ${plant.stock ? "text-green-600" : "text-red-600"}`}>
+            {/* {plant.stock} */}
             {plant.stock ? "Available" : "Out of Stock"}
           </p>
 

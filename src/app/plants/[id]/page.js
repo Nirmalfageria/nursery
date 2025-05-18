@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/store/cardSlice";
 import Image from "next/image";
+import { PlaySquare } from "lucide-react";
 const PlantDetailPage = ({ params }) => {
   const { id } = params;
   const dispatch = useDispatch();
