@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import {ReduxProvider} from "../redux/provider"; // Make sure path is correct
 import WhatsappButton from "./components/WhastappButton";
 import HydrateAdmin from "./components/HydrateAdmin";
+import Footer from "./components/Footer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           {children}
           <WhatsappButton />
+          <Footer/>
         </ReduxProvider>
       </body>
     </html>
