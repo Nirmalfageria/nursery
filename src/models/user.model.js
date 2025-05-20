@@ -32,7 +32,6 @@ const UserSchema = new mongoose.Schema({
     sparse: true,
     match: [/^\d{10}$/, "Please enter a valid 10-digit mobile number"],
   },
-
   password: {
     type: String,
     minlength: [8, "Password must be at least 8 characters"],
@@ -46,6 +45,14 @@ const UserSchema = new mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: false,
+  },
+  verificationCode: {
+    type: String,
+    default: null,
+  },
+  verificationExpiry: {
+    type: Date,
+    default: null,
   },
   createdAt: {
     type: Date,

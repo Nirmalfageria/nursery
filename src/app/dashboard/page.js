@@ -34,7 +34,7 @@ export default function Dashboard() {
         const { user, success } = await userRes.json();
         if (!success) throw new Error("Invalid user data");
         setUserData(user);
-// console.log(user)
+        // console.log(user)
         const orderRes = await fetch("/api/orders", {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -66,10 +66,10 @@ export default function Dashboard() {
 
       if (response.ok) {
         setUserData(null);
-      
+
         Cookies.remove("isAdmin");
         dispatch(setAdmin(false));
-        router.push('/login');
+        router.push("/login");
       } else {
         throw new Error("Logout failed");
       }
@@ -157,7 +157,26 @@ export default function Dashboard() {
                       <strong>Role:</strong> {userData.role}
                     </li>
                     <li>
-                      <strong>Verified:</strong> {userData.verified ? "Yes" : "No"}
+                      <strong>Verified:</strong>{" "}
+                      {userData.isVerified ? (
+                        "Yes"
+                      ) : (
+                        <span className="text-red-600">
+                          No —{" "}
+                          <Link
+                            href={{
+                              pathname: "/verify",
+                              query: {
+                                email: userData.email || "",
+                                phoneNumber: userData.phoneNumber || "",
+                              },
+                            }}
+                            className="text-blue-600 hover:underline"
+                          >
+                            Verify Now
+                          </Link>
+                        </span>
+                      )}
                     </li>
                   </ul>
                 </div>
@@ -216,9 +235,10 @@ export default function Dashboard() {
                         {new Date(order.createdAt).toLocaleDateString()}
                       </p>
                     </div>
-                  
+
                     <span className="text-sm text-gray-600">
-                      {order.address.street},{order.address.city},{order.address.pincode}
+                      {order.address.street},{order.address.city},
+                      {order.address.pincode}
                     </span>
                   </div>
                   <ul className="mt-3 text-sm text-gray-700 space-y-1 pl-4 list-disc break-words">

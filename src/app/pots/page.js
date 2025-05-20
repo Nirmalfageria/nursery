@@ -69,14 +69,12 @@ export default function PotsPage() {
               key={pot._id}
               className="bg-white rounded-lg shadow-md  flex flex-col"
             >
-              <div className="relative h-48 w-full mb-1">
-                <Image
-                  src={pot.imageUrl}
-                  alt={pot.name}
-                  fill
-                  className="object-fill rounded-md"
-                />
-              </div>
+              <img
+                src={pot.imageUrl}
+                alt={pot.name}
+                className="w-full h-35 sm:h-40 object-fill rounded-lg"
+              />
+
               <h2 className="text-xl font-semibold text-green-800 mb-1">
                 {pot.name}
               </h2>
