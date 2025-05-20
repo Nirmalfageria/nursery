@@ -20,41 +20,43 @@ const sliderImages = [
   },
 ];
 
-const Home = () => {
-  return (
-    <div className="w-full py-14">
-      {/* Hero Slider */}
-      <Swiper
-        modules={[Autoplay, Pagination]}
-        autoplay={{ delay: 3000 }}
-        pagination={{ clickable: true }}
-        loop={true}
-        className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] "
-      >
-        {sliderImages.map((image, index) => (
-          <SwiperSlide key={index}>
-            <div className="w-full h-full ">
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="object-fill w-full h-full"
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
 
-      {/* Intro Section */}
-      <section className="text-center py-10 px-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-green-700 mb-3">
-          Welcome to Our Nursery
-        </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-          Discover a wide range of plants, pots, and garden accessories that bring nature to your doorstep.
-        </p>
-      </section>
-    </div>
-  );
-};
+  const Home = () => {
+    return (
+      <div className="pt-[60px] py-15"> {/* added pt-[70px] */}
+        {/* Hero Slider */}
+        <Swiper
+          modules={[Autoplay, Pagination]}
+          autoplay={{ delay: 3000 }}
+          pagination={{ clickable: true }}
+          loop={true}
+          className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh]"
+        >
+          {sliderImages.map((image, index) => (
+            <SwiperSlide key={index}>
+              <div className="w-full h-full">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="object-fill w-full h-full"
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+  
+        {/* Intro Section */}
+        <section className="text-center py-10 px-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-green-700 mb-3">
+            Welcome to Our Nursery
+          </h2>
+          <p className="text-gray-600 mx-auto text-sm sm:text-base max-w-3xl">
+            Discover a wide range of plants, pots, and garden accessories that bring nature to your doorstep.
+          </p>
+        </section>
+      </div>
+    );
+  };
+  
 
 export default Home;
