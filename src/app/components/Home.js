@@ -29,7 +29,7 @@ const Home = () => {
         autoplay={{ delay: 3000 }}
         pagination={{ clickable: true }}
         loop={true}
-        className="w-full h-[50vh] sm:h-[60vh] md:h-[80vh] "
+        className="w-full h-[70vh] sm:h-[70vh] md:h-[80vh] "
       >
         {sliderImages.map((image, index) => (
           <SwiperSlide key={index}>
