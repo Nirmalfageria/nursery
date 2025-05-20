@@ -55,7 +55,7 @@ export default function Cart() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 text-black">
+    <div className="max-w-7xl mx-auto px-4 py-15 text-black">
       <h2 className="text-2xl font-semibold">Your Cart</h2>
 
       {cartItems.length === 0 ? (

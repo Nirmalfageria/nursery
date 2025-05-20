@@ -22,22 +22,22 @@ const sliderImages = [
 
 const Home = () => {
   return (
-    <div className="w-full">
+    <div className="w-full py-14">
       {/* Hero Slider */}
       <Swiper
         modules={[Autoplay, Pagination]}
         autoplay={{ delay: 3000 }}
         pagination={{ clickable: true }}
         loop={true}
-        className="w-full h-[70vh] sm:h-[70vh] md:h-[80vh] "
+        className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] "
       >
         {sliderImages.map((image, index) => (
           <SwiperSlide key={index}>
-            <div className="w-full h-full mt-8">
+            <div className="w-full h-full ">
               <img
                 src={image.src}
                 alt={image.alt}
-                className="object-cover w-full h-full"
+                className="object-fill w-full h-full"
               />
             </div>
           </SwiperSlide>
