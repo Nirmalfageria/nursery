@@ -10,7 +10,7 @@ export default function WhatsappButton() {
       style={{
         position: 'fixed',
         bottom: '20px',
-        right: '20px',
+        left: '20px',
         zIndex: 1000,
         backgroundColor: '#25D366',
         padding: '10px',
