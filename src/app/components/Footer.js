@@ -18,7 +18,7 @@ const Footer = () => {
         {/* Social Media Icons */}
         <div className="flex space-x-4 text-lg">
           <a
-            href="https://facebook.com/NirmalFageria"
+            href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-500"
@@ -26,7 +26,7 @@ const Footer = () => {
             <AiFillFacebook />
           </a>
           <a
-            href="https://x.com/NirmalFageria"
+            href="https://x.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-400"
@@ -34,7 +34,7 @@ const Footer = () => {
             <AiOutlineTwitter />
           </a>
           <a
-            href="https://www.instagram.com/nirmal_fageria/"
+            href="https://www.instagram.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-pink-400"

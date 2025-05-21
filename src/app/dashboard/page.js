@@ -91,11 +91,11 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-50">
         <div className="text-center space-y-4">
-          <h2 className="text-2xl font-semibold text-red-600">Error</h2>
-          <p className="text-gray-700">{error}</p>
+          <h2 className="text-2xl font-semibold ">Please Login First </h2> 
+          {/* <p className="text-gray-700">{error}</p> */}
           <button
             onClick={() => router.push("/login")}
-            className="mt-2 px-5 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition"
+            className="mt-2 px-5 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition cursor-pointer"
           >
             Go to Login
           </button>

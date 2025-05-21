@@ -68,7 +68,7 @@ export default function Navbar() {
             className="flex items-center gap-1 group text-lg"
           >
             <LayoutDashboard size={20} />
-            <span className="group-hover:text-green-700">Dashboard</span>
+            <span className="group-hover:text-green-700">Account</span>
             <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-green-700 transition-all duration-300 group-hover:w-full"></span>
           </Link>
         </div>

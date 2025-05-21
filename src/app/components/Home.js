@@ -30,7 +30,7 @@ const sliderImages = [
           autoplay={{ delay: 3000 }}
           pagination={{ clickable: true }}
           loop={true}
-          className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh]"
+          className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh]"
         >
           {sliderImages.map((image, index) => (
             <SwiperSlide key={index}>
