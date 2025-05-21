@@ -64,7 +64,7 @@ export default function Navbar() {
 
           {/* Dashboard Icon */}
           <Link
-            href="/dashboard"
+            href="/account"
             className="flex items-center gap-1 group text-lg"
           >
             <LayoutDashboard size={20} />
@@ -109,7 +109,7 @@ export default function Navbar() {
             </button>
 
             {/* Navigation Links */}
-            {["/", "/plants", "/services", "/pots", "/dashboard"].map(
+            {["/", "/plants", "/services", "/pots", "/account"].map(
               (path, index) => (
                 <motion.div
                   key={path}
