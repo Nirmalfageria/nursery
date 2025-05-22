@@ -91,7 +91,17 @@ export default function EditPlantPage() {
       setLoading(false);
     }
   };
-
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <img
+          src="/temp/5FCA.gif"
+          alt="Loading animation"
+          className="w-48 h-48 object-contain"
+        />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-white p-4 pt-15">
       <div className="max-w-7xl mx-auto">

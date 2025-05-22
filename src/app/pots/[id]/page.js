@@ -62,11 +62,14 @@ const PotDetailPage = ({ params }) => {
       console.error(error);
     }
   };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-green-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-600 border-b-4"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <img
+          src="/temp/5FCA.gif"
+          alt="Loading animation"
+          className="w-48 h-48 object-contain"
+        />
       </div>
     );
   }

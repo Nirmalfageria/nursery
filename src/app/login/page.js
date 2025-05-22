@@ -56,7 +56,7 @@ const handleSubmit = async (e) => {
     Cookies.set("isAdmin", isAdmin ? "true" : "false");
 
     // ✅ Redirect to dashboard
-    router.push("/dashboard");
+    router.push("/account");
   } catch {
     setErrors({ form: "Network error. Please try again." });
   } finally {
@@ -64,7 +64,17 @@ const handleSubmit = async (e) => {
   }
 };
 
-
+if (isLoading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <img
+        src="/temp/5FCA.gif"
+        alt="Loading animation"
+        className="w-48 h-48 object-contain"
+      />
+    </div>
+  );
+}
   return (
     <div className="min-h-screen bg-green-50 flex flex-col justify-center items-center px-6">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-green-100">
