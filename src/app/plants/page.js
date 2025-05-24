@@ -42,7 +42,7 @@ export default function PlantsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-white min-h-screen flex items-center justify-center">
         <img
           src="/temp/5FCA.gif"
           alt="Loading animation"

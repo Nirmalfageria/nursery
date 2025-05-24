@@ -54,7 +54,7 @@ const handleSubmit = async (e) => {
 
     // ✅ Set cookie to persist admin login
     Cookies.set("isAdmin", isAdmin ? "true" : "false");
-
+  
     // ✅ Redirect to dashboard
     router.push("/account");
   } catch {

@@ -22,6 +22,8 @@ export async function POST() {
       sameSite: 'strict',
       expires: new Date(0),
     });
+    
+  
 
     return response;
   } catch (error) {
