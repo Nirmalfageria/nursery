@@ -83,7 +83,7 @@ const PlantDetailPage = ({ params }) => {
   }
 
   return (
-    <div className="flex justify-center items-center p-6 max-w-4xl mx-auto pt-15">
+    <div className="flex justify-center items-center p-6 max-w-4xl mx-auto pt-15 bg-white">
       <div className="relative rounded-lg shadow-md p-6 flex w-full flex-col md:flex-row ">
         <div className="w-full md:w-1/2 flex justify-center items-center">
           <Image

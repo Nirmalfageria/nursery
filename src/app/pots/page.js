@@ -51,7 +51,7 @@ export default function PotsPage() {
   }
 
   return (
-    <div className="min-h-screen px-6 py-15 bg-green-50">
+    <div className="min-h-screen px-6 py-15 bg-white">
       <div className="max-w-6xl mx-auto text-center">
         <h1 className="text-3xl font-bold text-green-700 mb-8">
           🪴 Available Pots

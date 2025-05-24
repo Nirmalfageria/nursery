@@ -157,9 +157,10 @@ if(loading){
     </div>
 )}
   return (
-    <div className="min-h-screen bg-green-700 text-white pt-20 px-4 pb-10">
+    <div className="min-h-screen bg-white text-green-900 pt-20 px-4 pb-10">
+
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6 text-center">
+        <h1 className="text-4xl font-bold mb-6 text-center text-green-800">
           🌿 Gardening Services
         </h1>
         <p className="mb-8 text-lg text-center">
@@ -167,7 +168,7 @@ if(loading){
         </p>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Services Offered</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-green-800">Services Offered</h2>
 
           {loading === "services" ? (
             <p>Loading services...</p>
@@ -216,7 +217,7 @@ if(loading){
           )}
         </section>
 
-        <section className="bg-white text-green-900 p-6 rounded-lg shadow-md mb-6">
+        <section className="bg-gray-100 text-green-900 p-6 rounded-lg shadow-md mb-6">
           <h2 className="text-xl font-bold mb-4">Book a Service</h2>
 
           <form onSubmit={handleBooking} className="space-y-4">
@@ -311,7 +312,7 @@ if(loading){
         </section>
 
         {isAdmin && (
-          <section className="bg-white text-green-900 p-6 rounded-lg shadow-md">
+          <section className="bg-gary-100 text-green-900 p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4">
               Add / Update Service (Admin)
             </h2>

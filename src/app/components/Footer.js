@@ -7,7 +7,7 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="border-t-1 text-black text-sm py-3 px-4">
+    <footer className="border-t-1 text-black text-sm py-3 px-4 bg-white">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
         
         {/* Address & Contact */}
