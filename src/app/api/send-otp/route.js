@@ -44,7 +44,7 @@ export async function POST(req) {
 
     if (type === 'email') {
       await transporter.sendMail({
-        from: `"Your App" <${process.env.GMAIL_USER}>`,
+        from: `"Nursery" <${process.env.GMAIL_USER}>`,
         to: contact,
         subject: 'Your OTP Code',
         text: `Your OTP is ${verificationCode}. It will expire in 5 minutes.`,

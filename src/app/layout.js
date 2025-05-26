@@ -30,11 +30,13 @@ export default function RootLayout({ children }) {
         <ReduxProvider>
           <HydrateAdmin />
           <Navbar />
-          {/* main will take all available space */}
           <main className="flex-grow">{children}</main>
           <WhatsappButton />
           <Footer />
         </ReduxProvider>
+
+        {/* ✅ Invisible persistent reCAPTCHA container */}
+        <div id="recaptcha-container" style={{ display: "none" }} />
       </body>
     </html>
   );

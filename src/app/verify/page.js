@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { auth } from '../../utils/firebase';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 
 export default function VerifyPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const email = searchParams.get('email');
   const phoneNumber = searchParams.get('phoneNumber');
 
@@ -17,8 +18,8 @@ export default function VerifyPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
+  const confirmationResultRef = useRef(null);
 
-  // Set contact and type on load
   useEffect(() => {
     if (email) {
       setContact(email);
@@ -31,14 +32,12 @@ export default function VerifyPage() {
     }
   }, [email, phoneNumber]);
 
-  // Auto-send OTP if email
   useEffect(() => {
     if (isEmail && contact) {
-      sendOtp(); // Auto-fire only for email
+      sendOtp(); // auto-send for email
     }
   }, [isEmail, contact]);
 
-  // Timer countdown
   useEffect(() => {
     if (resendTimer > 0) {
       const interval = setInterval(() => {
@@ -48,28 +47,63 @@ export default function VerifyPage() {
     }
   }, [resendTimer]);
 
+  const setupRecaptcha = () => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+        callback: (response) => {},
+        'expired-callback': () => {
+          setMessage('Recaptcha expired. Please try again.');
+        },
+      });
+    }
+  };
+
   async function sendOtp() {
-    if (!contact) return;
     setLoading(true);
     setMessage('');
-    try {
-      const res = await fetch('/api/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contact, type: isEmail ? 'email' : 'phone' }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setOtpSent(true);
-        setMessage('✅ OTP sent successfully!');
-        setResendTimer(60);
-      } else {
-        setMessage(`❌ Failed to send OTP: ${data.message || 'Unknown error'}`);
+
+    if (isEmail) {
+      // email OTP route
+      try {
+        const res = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contact, type: 'email' }),
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setOtpSent(true);
+          setMessage('✅ OTP sent to email!');
+          setResendTimer(60);
+        } else {
+          setMessage(`❌ Failed to send OTP: ${data.message}`);
+        }
+      } catch (err) {
+        setMessage('❌ Error sending OTP. Please try again.');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setMessage('❌ Error sending OTP. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      // phone OTP using Firebase
+      // setupRecaptcha();
+      const appVerifier = window.recaptchaVerifier;
+
+      try {
+        const formattedPhone = contact.startsWith('+') ? contact : `+91${contact}`;
+        const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+        
+        confirmationResultRef.current = confirmationResult;
+        setOtpSent(true);
+        setMessage('✅ OTP sent to phone!');
+        setResendTimer(60);
+      } catch (error) {
+        console.error(error);
+        setMessage('❌ Failed to send OTP via phone.');
+      } finally {
+        setLoading(false);
+      }
     }
   }
 
@@ -77,23 +111,40 @@ export default function VerifyPage() {
     if (!otp) return setMessage('❌ Please enter the OTP.');
     setLoading(true);
     setMessage('');
-    try {
-      const res = await fetch('/api/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contact, otp, type: isEmail ? 'email' : 'phone' }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setMessage('✅ Verification successful! Redirecting...');
-        setTimeout(() => router.push('/account'), 2000);
-      } else {
-        setMessage(`❌ Verification failed: ${data.message || 'Invalid OTP'}`);
+
+    if (isEmail) {
+      try {
+        const res = await fetch('/api/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contact, otp, type: 'email' }),
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setMessage('✅ Email verified! Redirecting...');
+          setTimeout(() => router.push('/account'), 2000);
+        } else {
+          setMessage(`❌ Verification failed: ${data.message}`);
+        }
+      } catch (err) {
+        setMessage('❌ Error verifying email OTP.');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setMessage('❌ Error verifying OTP. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      try {
+        const result = await confirmationResultRef.current.confirm(otp);
+        if (result?.user) {
+          setMessage('✅ Phone verified! Redirecting...');
+          setTimeout(() => router.push('/account'), 2000);
+        }
+      } catch (err) {
+        console.error(err);
+        setMessage('❌ Invalid OTP for phone.');
+      } finally {
+        setLoading(false);
+      }
     }
   }
 
@@ -149,6 +200,8 @@ export default function VerifyPage() {
             </button>
           </>
         )}
+
+        <div id="recaptcha-container" />
 
         {message && (
           <p
