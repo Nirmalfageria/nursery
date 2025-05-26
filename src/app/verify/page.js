@@ -6,10 +6,19 @@ import { auth } from '../../utils/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 
 export default function VerifyPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const email = searchParams.get('email');
-  const phoneNumber = searchParams.get('phoneNumber');
+
+  // local state to hold search params after hydration
+  const [email, setEmail] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Run only on client after hydration
+    setEmail(searchParams.get('email'));
+    setPhoneNumber(searchParams.get('phoneNumber'));
+  }, [searchParams]);
 
   const [contact, setContact] = useState('');
   const [isEmail, setIsEmail] = useState(false);
@@ -27,6 +36,8 @@ export default function VerifyPage() {
     } else if (phoneNumber) {
       setContact(phoneNumber);
       setIsEmail(false);
+    } else if (email === null && phoneNumber === null) {
+      // still loading params
     } else {
       setMessage('❌ No email or phone number provided.');
     }
@@ -87,7 +98,7 @@ export default function VerifyPage() {
       }
     } else {
       // phone OTP using Firebase
-      // setupRecaptcha();
+      setupRecaptcha();
       const appVerifier = window.recaptchaVerifier;
 
       try {
@@ -146,6 +157,15 @@ export default function VerifyPage() {
         setLoading(false);
       }
     }
+  }
+
+  // Show a loading state while params are fetched
+  if (email === null && phoneNumber === null) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
