@@ -1,6 +1,13 @@
-// app/verify/page.js (server component)
-import VerifyPageClient from './VerifyPageClient';
+
+'use client';
+import React, { Suspense } from 'react';
+
+import VerifyClient from "./VerifyPageClient";
 
 export default function VerifyPage() {
-  return <VerifyPageClient />;
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <VerifyClient />
+    </Suspense>
+  );
 }
