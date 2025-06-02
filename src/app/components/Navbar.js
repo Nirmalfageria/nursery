@@ -83,7 +83,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu">
+          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu" className="cursor-pointer">
             {isOpen ? <X size={32} /> : <Menu size={32} />}
           </button>
         </div>
@@ -103,7 +103,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsOpen(false)}
               aria-label="Close Menu"
-              className="absolute top-5 right-5 text-white"
+              className="absolute top-5 right-5 text-white cursor-pointer "
             >
               <X size={36} />
             </button>
