@@ -29,15 +29,16 @@ export async function GET(request) {
     }
 
     // Fetch all bookings with user details
-    const bookings = await Booking.find()
-    .populate('userId', 'fullName username') // fetch only these fields from User
-    .sort({ createdAt: -1 }); // newest orders first
-  
-    if (!bookings || bookings.length === 0) {
-      return NextResponse.json({ message: 'No bookings found', success: true }, { status: 404 });
-    }
+   const bookings = await Booking.find()
+  .populate('userId', 'fullName username')
+  .sort({ createdAt: -1 });
 
-    return NextResponse.json({ bookings, success: true }, { status: 200 });
+if (!bookings || bookings.length === 0) {
+  return NextResponse.json({ bookings: [], message: 'No bookings found', success: true }, { status: 200 });
+}
+
+return NextResponse.json({ bookings, success: true }, { status: 200 });
+
   } catch (error) {
     console.error('Error fetching admin bookings:', error);
     return NextResponse.json(

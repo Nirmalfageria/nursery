@@ -26,51 +26,57 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setIsLoading(true);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-  setIsLoading(true);
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: formData.username.toLowerCase(),
+          password: formData.password,
+        }),
+      });
+      console.log("Response:", response); // ✅ Log the response object
+      const data = await response.json(); // ✅ OK here
+      console.log("Data:", data); // ✅ Log the data received
+      if (!response.ok) {
+        const data = await response.json(); // ✅ OK here
+        if (data.message === "User not found") {
+          setErrors({ form: "No user is there with this username." });
+        } else {
+          setErrors({ form: data.message || "An error occurred" });
+        }
+        return;
+      }
 
-  try {
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: formData.username.toLowerCase(),
-        password: formData.password,
-      }),
-    });
+      
+      // ✅ Set Redux state for admin
+      const isAdmin = data.user.role === "admin"; // Adjust according to your API
+      dispatch(setAdmin(isAdmin));
 
-    const data = await response.json();
-    if (!response.ok) {
-      setErrors({ form: data.message });
-      return;
+      // ✅ Set cookie to persist admin login
+      Cookies.set("isAdmin", isAdmin ? "true" : "false");
+
+      // ✅ Redirect to dashboard
+      router.push("/account");
+    } catch {
+      setErrors({ form: "Network error. Please try again." });
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    // ✅ Set Redux state for admin
-    const isAdmin = data.user.role === "admin"; // Adjust according to your API
-    dispatch(setAdmin(isAdmin));
-
-    // ✅ Set cookie to persist admin login
-    Cookies.set("isAdmin", isAdmin ? "true" : "false");
-  
-    // ✅ Redirect to dashboard
-    router.push("/account");
-  } catch {
-    setErrors({ form: "Network error. Please try again." });
-  } finally {
-    setIsLoading(false);
+  if (isLoading) {
+    return (
+      <div className="bg-white min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
-};
-
-if (isLoading) {
-  return (
-    <div className="bg-white min-h-screen flex items-center justify-center">
-    <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-  </div>
-  );
-}
   return (
     <div className="min-h-screen bg-green-50 flex flex-col justify-center items-center px-6">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-green-100">
@@ -155,10 +161,7 @@ if (isLoading) {
 
         <div className="mt-6 text-center text-sm text-green-800">
           Don’t have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-green-700 font-medium underline"
-          >
+          <Link href="/signup" className="text-green-700 font-medium underline">
             Sign up
           </Link>
         </div>
