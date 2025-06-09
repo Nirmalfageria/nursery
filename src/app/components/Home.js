@@ -1,52 +1,70 @@
 'use client';
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
+import PlantsPage from '../plants/page';  // Import plants page component
+import PotsPage from '../pots/page';      // Import pots page component
+
+
 const sliderImages = [
-  { src: "/temp/banner1.jpeg", alt: "Indoor Plants Collection" },
-  { src: "/temp/banner2.jpeg", alt: "Grow Your Green Space" },
-  { src: "/temp/banner3.jpeg", alt: "Decorative Pots & Planters" },
-  { src: "/temp/banner4.jpeg", alt: "Decorative Pots & Planters" },
-  { src: "/temp/banner5.jpeg", alt: "Decorative Pots & Planters" },
-  { src: "/temp/banner6.jpg", alt: "Decorative Pots & Planters" },
+  { src: '/temp/banner1.jpeg', alt: 'Indoor Plants Collection' },
+  { src: '/temp/banner2.jpeg', alt: 'Grow Your Green Space' },
+  { src: '/temp/banner3.jpeg', alt: 'Decorative Pots & Planters' },
+  { src: '/temp/banner4.jpeg', alt: 'Decorative Pots & Planters' },
+  { src: '/temp/banner5.jpeg', alt: 'Decorative Pots & Planters' },
+  { src: '/temp/banner6.jpg', alt: 'Decorative Pots & Planters' },
 ];
 
-const Home = () => {
+export default function Home() {
   return (
-    <main className="pt-15 h-auto overflow-x-hidden bg-white">
+    <main className="pt-[60px] bg-white overflow-x-hidden scroll-smooth">
       {/* Hero Slider */}
-      <Swiper
-        modules={[Autoplay, Pagination]}
-        autoplay={{ delay: 3000 }}
-        loop={true}
-        pagination={{ clickable: true }}
-        className="w-full h-[60vh] sm:h-[50vh] md:h-[60vh] rounded-md"
-      >
-        {sliderImages.map((image, index) => (
-          <SwiperSlide key={index}>
-            <img
-              src={image.src}
-              alt={image.alt}
-              className="w-full h-full object-contain"
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <section id="home" className="w-full h-[30vh] sm:h-[50vh] md:h-[60vh] rounded-md overflow-hidden">
+        <Swiper
+          modules={[Autoplay, Pagination]}
+          autoplay={{ delay: 3000 }}
+          loop={true}
+          // pagination={{ clickable: true }}
+          className="w-full h-full"
+        >
+          {sliderImages.map((image, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-full object-contain"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </section>
 
-      {/* Intro Section */}
-      <section className="text-center  px-4">
-        <h2 className="text-xl sm:text-3xl font-bold text-green-700 mb-3">
+      {/* Intro */}
+      <section className="text-center px-4 pt-8 max-w-3xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-bold text-green-700 mb-2">
           Welcome to Our Nursery
         </h2>
-        <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto">
+        <p className="text-gray-600">
           Discover a wide range of plants, pots, and garden accessories that bring nature to your doorstep.
         </p>
       </section>
+
+      {/* Render other pages inline */}
+      <section id="plants" className="min-h-screen">
+        <PlantsPage />
+      </section>
+
+      
+
+      <section id="pots" className="">
+        <PotsPage />
+      </section>
+
+      
     </main>
   );
-};
-
-export default Home;
+}

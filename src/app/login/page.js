@@ -40,8 +40,8 @@ export default function LoginPage() {
           password: formData.password,
         }),
       });
+      const data = await response.json(); // ✅ OK here
       // console.log("Response:", response); // ✅ Log the response object
-      // const data = await response.json(); // ✅ OK here
       // console.log("Data:", data); // ✅ Log the data received
       
       if (!response.ok) {

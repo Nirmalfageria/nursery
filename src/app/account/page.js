@@ -27,7 +27,7 @@ export default function Dashboard() {
           headers: { "Content-Type": "application/json" },
         });
 
-        if (!userRes.ok) throw new Error("Failed to fetch user data");
+        if (!userRes.ok) throw new Error("PLease login First");
 
         const { user, success } = await userRes.json();
         if (!success || !user) throw new Error("Invalid user");
@@ -39,9 +39,14 @@ export default function Dashboard() {
           fetch(user.role === "admin" ? "/api/admin/orders" : "/api/orders", {
             credentials: "include",
           }),
-          fetch(user.role === "admin" ? "/api/admin/bookings" : "/api/admin/bookings", {
-            credentials: "include",
-          }),
+          fetch(
+            user.role === "admin"
+              ? "/api/admin/bookings"
+              : "/api/admin/bookings",
+            {
+              credentials: "include",
+            }
+          ),
         ]);
 
         const ordersData = await ordersRes.json();
@@ -62,6 +67,7 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     try {
+      setIsLoading(true);
       const res = await fetch("/api/logout", {
         method: "POST",
         credentials: "include",
@@ -71,12 +77,15 @@ export default function Dashboard() {
         setUserData(null);
         Cookies.remove("isAdmin");
         dispatch(setAdmin(false));
-        router.push("/home");
+        // setIsLoading(false);
+        router.push("/");
       } else {
         throw new Error("Logout failed");
       }
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,7 +123,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-50">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold text-red-700">Error</h2>
+          {/* <h2 className="text-2xl font-semibold text-red-700">Error</h2> */}
           <p>{error}</p>
           <button
             onClick={() => router.push("/login")}
@@ -139,7 +148,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-green-50 py-6">
       {/* Top nav */}
-      
+
       <main className="max-w-5xl mx-auto px-6 py-10 space-y-12">
         {/* Profile Card */}
         <section className="bg-white rounded-xl shadow p-6 flex flex-col sm:flex-row gap-8 items-center">
@@ -147,24 +156,33 @@ export default function Dashboard() {
             <UserCircle className="w-24 h-24 text-green-400 bg-green-100 rounded-full p-2" />
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-green-800 mb-1">
-              {userData.fullName || userData.username}
-            </h2>
-            <p className="text-gray-600 mb-2 capitalize">
-              {userData.role === "admin" ? "Admin" : "Customer"}
-            </p>
-            <div className="flex flex-col gap-1 text-gray-700 text-sm mb-2">
-              <span className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                {userData.email}
-              </span>
-              {userData.phoneNumber && (
-                <span className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  {userData.phoneNUmber}
-                </span>
-              )}
-            </div>
+            {userData ? (
+              <>
+                <h2 className="text-2xl font-bold text-green-800 mb-1">
+                  {userData.fullName || userData.username}
+                </h2>
+                <p className="text-gray-600 mb-2 capitalize">
+                  {userData.role === "admin" ? "Admin" : "Customer"}
+                </p>
+                <div className="flex flex-col gap-1 text-gray-700 text-sm mb-2">
+                  <span className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    {userData.email}
+                  </span>
+                  {userData.phoneNumber && (
+                    <span className="flex items-center gap-2">
+                      <Phone className="w-4 h-4" />
+                      {userData.phoneNumber}
+                    </span>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p className="text-red-500 text-sm">
+                User info unavailable. Please login again.
+              </p>
+            )}
+
             <div className="flex gap-4 mt-4">
               <button
                 onClick={handleEdit}
@@ -192,13 +210,11 @@ export default function Dashboard() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {orders.map((order) => {
-                const status = statusStyles[order.status] || statusStyles.pending;
+                const status =
+                  statusStyles[order.status] || statusStyles.pending;
                 const total =
                   order.totalAmount ||
-                  order.items.reduce(
-                    (sum, i) => sum + (i.price * i.quantity),
-                    0
-                  );
+                  order.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
                 return (
                   <div
                     key={order._id}
@@ -206,7 +222,9 @@ export default function Dashboard() {
                   >
                     {/* Status and Date */}
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${status.color}`}>
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${status.color}`}
+                      >
                         {status.label}
                       </span>
                       <span className="text-xs text-gray-400">
@@ -224,8 +242,12 @@ export default function Dashboard() {
                               className="w-8 h-8 rounded object-cover border"
                             />
                           )}
-                          <span className="font-medium text-gray-800 truncate">{item.common_name || item.name}</span>
-                          <span className="text-xs text-gray-500 ml-auto">x{item.quantity}</span>
+                          <span className="font-medium text-gray-800 truncate">
+                            {item.common_name || item.name}
+                          </span>
+                          <span className="text-xs text-gray-500 ml-auto">
+                            x{item.quantity}
+                          </span>
                         </div>
                       ))}
                       {order.items.length > 2 && (
@@ -236,13 +258,16 @@ export default function Dashboard() {
                     </div>
                     {/* Address */}
                     <div className="text-xs text-gray-500 mb-1">
-                      {order.address?.street}, {order.address?.city} {order.address?.pincode}
+                      {order.address?.street}, {order.address?.city}{" "}
+                      {order.address?.pincode}
                     </div>
                     {/* User info for admin */}
                     {isAdmin && order.user && (
                       <div className="text-xs text-gray-400 mb-1">
                         <span className="font-medium text-gray-700">By:</span>{" "}
-                        {order.user.fullName || order.user.username || "Unknown"}
+                        {order.user.fullName ||
+                          order.user.username ||
+                          "Unknown"}
                       </div>
                     )}
                     {/* Total and Payment */}
@@ -288,9 +313,14 @@ export default function Dashboard() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {bookings.map((booking) => (
-                <div key={booking._id} className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-200 flex flex-col p-4">
+                <div
+                  key={booking._id}
+                  className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-200 flex flex-col p-4"
+                >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-green-700 font-semibold">{booking.serviceName}</span>
+                    <span className="text-green-700 font-semibold">
+                      {booking.serviceName}
+                    </span>
                     <span className="text-xs text-gray-400">
                       {new Date(booking.date).toLocaleDateString()}
                     </span>
@@ -301,7 +331,9 @@ export default function Dashboard() {
                   {isAdmin && booking.user && (
                     <div className="text-xs text-gray-400 mb-1">
                       <span className="font-medium text-gray-700">By:</span>{" "}
-                      {booking.user.fullName || booking.user.username || "Unknown"}
+                      {booking.user.fullName ||
+                        booking.user.username ||
+                        "Unknown"}
                     </div>
                   )}
                 </div>

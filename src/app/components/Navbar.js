@@ -28,7 +28,7 @@ export default function Navbar() {
               loop
               muted
               playsInline
-              className="w-10 h-15 md:h-11 object-cover ml-1"
+              className="w-10 h-13 md:h-11 object-cover ml-1"
             />
           </motion.div>
         </Link>
@@ -76,7 +76,7 @@ export default function Navbar() {
         {/* Mobile Cart + Hamburger */}
         <div className="md:hidden p-1 flex items-center gap-4 h-full cursor-pointer">
           <Link href="/cart" className="relative" aria-label="Cart">
-            <ShoppingCart size={37} className="hover:text-green-200" />
+            <ShoppingCart size={35} className="hover:text-green-200" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                 {cartCount}
@@ -84,7 +84,7 @@ export default function Navbar() {
             )}
           </Link>
           <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu" className="cursor-pointer">
-            {isOpen ? <X size={40} /> : <Menu size={40} />}
+            {isOpen ? <X size={38} /> : <Menu size={38} />}
           </button>
         </div>
       </div>

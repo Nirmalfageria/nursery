@@ -47,7 +47,7 @@ export default function PotsPage() {
   }
 
   return (
-    <div className="min-h-screen px-6 py-15 bg-white">
+    <div className="min-h-screen px-6 pt-15 bg-white">
       <div className="max-w-6xl mx-auto text-center">
         <h1 className="text-3xl font-bold text-green-700 mb-8">
           🪴 Available Pots
@@ -105,7 +105,7 @@ export default function PotsPage() {
                   onClick={() => handleAddToCart(pot)}
                   className={`px-1 py-1.5 rounded text-sm flex items-center justify-center w-full ${
                     pot.stock
-                      ? "bg-green-500 text-white hover:bg-green-600"
+                      ? "bg-green-500 text-white hover:bg-green-600 cursor-pointer"
                       : "bg-gray-400 text-gray-700 cursor-not-allowed"
                   }`}
                   title={pot.stock ? "Add to Cart" : "Out of Stock"}

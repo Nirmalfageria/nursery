@@ -32,58 +32,77 @@ export default function Cart() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-15 text-black">
-      <h2 className="text-2xl font-semibold">Your Cart</h2>
+    <div className="min-h-screen px-6 pt-15 bg-white">
+      <div className="max-w-6xl mx-auto text-center">
+        <h2 className="text-3xl font-bold text-green-700 mb-8">🛒 Your Cart</h2>
 
-      {cartItems.length === 0 ? (
-        <p>Your cart is empty!</p>
-      ) : (
-        <div>
-          <div className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 rounded-lg justify-items-center ${styles.cartGrid}`}>
-            {cartItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg shadow">
-                <img
-                  src={item.imageUrl}
-                  alt={item.common_name || "Plant image"}
-                  className="w-full h-35 object-fill rounded-lg"
-                />
-                <h3 className="font-semibold text-lg text-center">{item.name}</h3>
-                <p className="text-center">Price: ₹{item.price}</p>
-                <div className="flex items-center justify-center w-full">
+        {cartItems.length === 0 ? (
+          <p className="text-gray-600">Your cart is empty!</p>
+        ) : (
+          <>
+            <div
+              className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 rounded-lg justify-items-center ${styles.plantGrid}`}
+            >
+              {cartItems.map((item) => (
+                <div key={item._id} className="bg-white rounded-lg shadow-md flex flex-col">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="w-42 h-35 sm:h-40 object-fill rounded-lg"
+                  />
+
+                  <h3 className="text-xl font-semibold text-green-800 mb-1">
+                    {item.name}
+                  </h3>
+
+                  <p className="text-gray-600 text-sm">
+                    Quantity: {item.quantity}
+                  </p>
+
+                  <span className="text-green-700 font-bold text-lg">
+                    ₹{item.price * item.quantity}
+                  </span>
+
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <button
+                      onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
+                      className="cursor-pointer px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                    >
+                      −
+                    </button>
+                    <span className="text-sm font-medium">{item.quantity}</span>
+                    <button
+                      onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
+                      className="cursor-pointer px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                    >
+                      +
+                    </button>
+                  </div>
+
                   <button
-                    onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
-                    className="px-2 py-1 bg-gray-300 rounded cursor-pointer flex items-center"
+                    onClick={() => dispatch(removeFromCart(item._id))}
+                    className="cursor-pointer text-red-600 hover:underline mt-2 text-sm"
                   >
-                    -
-                  </button>
-                  <span className="px-2">{item.quantity}</span>
-                  <button
-                    onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
-                    className="px-2 py-1 bg-gray-300 rounded cursor-pointer"
-                  >
-                    +
+                    Remove
                   </button>
                 </div>
-                <button
-                  onClick={() => dispatch(removeFromCart(item._id))}
-                  className="flex items-center justify-center w-full mt-1 text-red-600 hover:underline cursor-pointer text-center"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 flex justify-between">
-            <h3 className="text-lg font-semibold mr-4">Total: ₹{totalPrice}</h3>
-            <button
-              onClick={handleProceedToCheckout}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer"
-            >
-              Proceed to Checkout
-            </button>
-          </div>
-        </div>
-      )}
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-col sm:flex-row justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 sm:mb-0">
+                Total: ₹{totalPrice}
+              </h3>
+              <button
+                onClick={handleProceedToCheckout}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
+              >
+                Proceed to Checkout
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
