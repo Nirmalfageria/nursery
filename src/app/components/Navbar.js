@@ -12,10 +12,10 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="bg-white text-black px-4 py-1 shadow-md absolute w-full z-50">
+    <nav className="bg-white text-black px-4  md:py-1 shadow-md absolute w-full z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 text-2xl font-bold">
+        <Link href="/" className="flex items-center  text-2xl font-bold">
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -28,7 +28,7 @@ export default function Navbar() {
               loop
               muted
               playsInline
-              className="w-10 h-10 object-cover rounded-full"
+              className="w-10 h-15 md:h-11 object-cover ml-1"
             />
           </motion.div>
         </Link>
@@ -76,7 +76,7 @@ export default function Navbar() {
         {/* Mobile Cart + Hamburger */}
         <div className="md:hidden p-1 flex items-center gap-4 h-full cursor-pointer">
           <Link href="/cart" className="relative" aria-label="Cart">
-            <ShoppingCart size={28} className="hover:text-green-200" />
+            <ShoppingCart size={37} className="hover:text-green-200" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                 {cartCount}
@@ -84,7 +84,7 @@ export default function Navbar() {
             )}
           </Link>
           <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu" className="cursor-pointer">
-            {isOpen ? <X size={32} /> : <Menu size={32} />}
+            {isOpen ? <X size={40} /> : <Menu size={40} />}
           </button>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function Navbar() {
               aria-label="Close Menu"
               className="absolute top-5 right-5 text-white cursor-pointer "
             >
-              <X size={36} />
+              <X size={46} />
             </button>
 
             {/* Navigation Links */}
