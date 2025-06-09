@@ -7,15 +7,25 @@ import 'swiper/css/pagination';
 
 const sliderImages = [
   {
-    src: "/temp/banner1.jpg",
+    src: "/temp/banner1.jpeg",
     alt: "Indoor Plants Collection",
   },
   {
-    src: "/temp/banner4.jpg",
+    src: "/temp/banner2.jpeg",
     alt: "Grow Your Green Space",
   },
   {
-    src: "/temp/banner3.jpg",
+    src: "/temp/banner3.jpeg",
+    alt: "Decorative Pots & Planters",
+  },
+   {
+    src: "/temp/banner4.jpeg",
+    alt: "Decorative Pots & Planters",
+  }, {
+    src: "/temp/banner5.jpeg",
+    alt: "Decorative Pots & Planters",
+  }, {
+    src: "/temp/banner6.jpg",
     alt: "Decorative Pots & Planters",
   },
 ];
@@ -28,7 +38,7 @@ const sliderImages = [
         <Swiper
           modules={[Autoplay, Pagination]}
           autoplay={{ delay: 3000 }}
-          pagination={{ clickable: true }}
+          // pagination={{ clickable: true }}
           loop={true}
           className="w-full h-[40vh] sm:h-[60vh] md:h-[70vh]"
         >
@@ -38,7 +48,7 @@ const sliderImages = [
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="object-fill w-full h-full"
+                  className="object-contain w-full h-full"
                 />
               </div>
             </SwiperSlide>
@@ -46,11 +56,11 @@ const sliderImages = [
         </Swiper>
   
         {/* Intro Section */}
-        <section className="text-center py-10 px-4">
+        <section className="text-center pt-2 px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-green-700 mb-3">
             Welcome to Our Nursery
           </h2>
-          <p className="text-gray-600 mx-auto text-sm sm:text-base max-w-3xl">
+          <p className="text-gray-600  text-sm sm:text-base">
             Discover a wide range of plants, pots, and garden accessories that bring nature to your doorstep.
           </p>
         </section>

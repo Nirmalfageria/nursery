@@ -40,9 +40,10 @@ export default function LoginPage() {
           password: formData.password,
         }),
       });
-      console.log("Response:", response); // ✅ Log the response object
-      const data = await response.json(); // ✅ OK here
-      console.log("Data:", data); // ✅ Log the data received
+      // console.log("Response:", response); // ✅ Log the response object
+      // const data = await response.json(); // ✅ OK here
+      // console.log("Data:", data); // ✅ Log the data received
+      
       if (!response.ok) {
         const data = await response.json(); // ✅ OK here
         if (data.message === "User not found") {
