@@ -46,7 +46,7 @@ export default function Home() {
       {/* Intro */}
       <section className="text-center px-4 pt-8 max-w-3xl mx-auto">
         <h2 className="text-2xl sm:text-3xl font-bold text-green-700 mb-2">
-          Welcome to Our Nursery
+          Welcome to Our Bageechi
         </h2>
         <p className="text-gray-600">
           Discover a wide range of plants, pots, and garden accessories that bring nature to your doorstep.

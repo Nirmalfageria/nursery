@@ -15,7 +15,8 @@ export default function Navbar() {
     <nav className="bg-white text-black px-4  md:py-1 shadow-md absolute w-full z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="flex items-center  text-2xl font-bold">
+        <Link href="/" className="flex items-center  text-lg font-semibold">
+
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -28,9 +29,10 @@ export default function Navbar() {
               loop
               muted
               playsInline
-              className="w-10 h-13 md:h-11 object-cover ml-1"
+              className=" h-9 object-cover pb-1"
             />
           </motion.div>
+              Bageechi
         </Link>
 
         {/* Desktop Links with Icons */}

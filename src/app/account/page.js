@@ -27,7 +27,7 @@ export default function Dashboard() {
           headers: { "Content-Type": "application/json" },
         });
 
-        if (!userRes.ok) throw new Error("PLease login First");
+        if (!userRes.ok) throw new Error("Please login First");
 
         const { user, success } = await userRes.json();
         if (!success || !user) throw new Error("Invalid user");

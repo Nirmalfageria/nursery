@@ -72,7 +72,7 @@ export default function PotsPage() {
               <img
                 src={pot.imageUrl}
                 alt={pot.name}
-                className="w-full h-35 sm:h-40 object-fill rounded-lg"
+                className="w-45 h-35 sm:h-40 object-fill rounded-lg"
               />
 
               <h2 className="text-xl font-semibold text-green-800 mb-1">

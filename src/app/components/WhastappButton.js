@@ -9,7 +9,7 @@ export default function WhatsappButton() {
       href="/whatsapp"
       style={{
         position: 'fixed',
-        bottom: '45px',
+        bottom: '55px',
         right: '20px',
         zIndex: 1000,
         backgroundColor: '#25D366',
