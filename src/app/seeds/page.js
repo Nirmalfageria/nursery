@@ -34,7 +34,7 @@ export default function SeedsPage() {
 
   const handleAddToCart = (seed) => {
     dispatch(addToCart(seed));
-    alert("Added to the Cart");
+    // alert("Added to the Cart");
     // router.push("/seeds");
   };
 

@@ -34,7 +34,7 @@ export default function PotsPage() {
 
   const handleAddToCart = (pot) => {
     dispatch(addToCart(pot));
-    alert("Added to the Cart");
+    // alert("Added to the Cart");
     // router.push("/pots");
   };
 

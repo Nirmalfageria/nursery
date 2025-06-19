@@ -34,7 +34,7 @@ export default function PlantsPage() {
 
   const handleAddToCart = (plant) => {
     dispatch(addToCart(plant));
-    alert("Added to the Cart");
+    // alert("Added to the Cart");
     // router.push("/plants");
   };
 
