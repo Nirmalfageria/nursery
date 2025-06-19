@@ -1,11 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import { ReduxProvider } from "../redux/provider"; // Check path
+import { ReduxProvider } from "../redux/provider";
 import WhatsappButton from "./components/WhastappButton";
 import HydrateAdmin from "./components/HydrateAdmin";
 import Footer from "./components/Footer";
-
+import CartSnackbar from './components/CartSnackbar'
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -47,7 +47,6 @@ export const metadata = {
   description: "App for the Bageechi services and products",
 };
 
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -57,12 +56,11 @@ export default function RootLayout({ children }) {
         <ReduxProvider>
           <HydrateAdmin />
           <Navbar />
+          <CartSnackbar /> {/* ✅ Now this works */}
           <main className="flex-grow">{children}</main>
           <WhatsappButton />
           <Footer />
         </ReduxProvider>
-
-        {/* ✅ Invisible persistent reCAPTCHA container */}
         <div id="recaptcha-container" style={{ display: "none" }} />
       </body>
     </html>
