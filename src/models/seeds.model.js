@@ -21,6 +21,12 @@ const seedSchema = new Schema({
   pricePerUnit: {
     type: Number,
     required: true,
+    min: 0,
+  },
+  priceUnit: {
+    type: String,
+    enum: ["per gram", "per kg", "per seed", "per packet"],
+    default: "per gram",
   },
   imageUrl: {
     type: String,

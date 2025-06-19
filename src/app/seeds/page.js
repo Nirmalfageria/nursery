@@ -77,21 +77,19 @@ export default function SeedsPage() {
                 {seed.name}
               </h2>
 
-              <p className="text-gray-600 text-sm">
-                <strong>Category:</strong> {seed.category}
-              </p>
-
+              
               <div className="flex justify-around items-center mb-2">
-                <span className="text-green-700 font-bold text-lg">
-                  ₹{seed.pricePerUnit}
-                </span>
-                <span
+               <span className="text-green-700 font-bold text-lg">
+  ₹{seed.pricePerUnit} <span className="text-sm text-gray-600">({seed.priceUnit})</span>
+</span>
+
+                {/* <span
                   className={`text-sm font-medium ${
                     seed.inStock ? "text-green-600" : "text-red-500"
                   }`}
                 >
                   {seed.inStock ? "In Stock" : "Out of Stock"}
-                </span>
+                </span> */}
               </div>
 
               <div className="grid grid-cols-[2fr_1fr] gap-1 mt-auto">
