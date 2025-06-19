@@ -4,8 +4,9 @@ import { useEffect } from 'react';
 
 export default function WhatsappRedirect() {
   useEffect(() => {
-    const phoneNumber = '918353064425';
-    const message = encodeURIComponent('Hi');
+    const phoneNumber = '919928114425'; // with country code
+    // Encode the message to ensure it's URL-safe
+    const message = encodeURIComponent('Hi there! I am interested in your products. Please let me know more details.');
     const url = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(url, '_blank');
   }, []);

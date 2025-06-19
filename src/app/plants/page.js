@@ -73,15 +73,15 @@ export default function PlantsPage() {
                 className="w-45 h-35 sm:h-40 object-fill rounded-lg"
               />
 
-              <h2 className="text-xl font-semibold text-green-800 mb-1">
+              <h2 className="text-xl font-semibold text-green-800 ">
                 {plant.name}
               </h2>
 
-              <p className="text-gray-600 text-sm">
+              {/* <p className="text-gray-600 text-sm">
                 <strong>Category:</strong> {plant.category || "Indoor"}
-              </p>
+              </p> */}
 
-              <div className="flex justify-around items-center mb-2">
+              <div className="flex justify-around items-center ">
                 <span className="text-green-700 font-bold text-lg">
                   ₹{plant.price}
                 </span>

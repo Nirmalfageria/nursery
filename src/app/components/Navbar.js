@@ -12,7 +12,7 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="bg-white text-black px-4  md:py-1 shadow-md absolute w-full z-50">
+   <nav className="bg-white text-black px-4 md:py-1 shadow-md fixed top-0 w-full z-50 backdrop-blur bg-white/95">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center  text-lg font-semibold">

@@ -12,7 +12,7 @@ const Footer = () => {
         
         {/* Address & Contact */}
         <div className="text-center md:text-left">
-          <span>Sikar, Rajasthan | Katrathal, Sikar 332024 | 📞 +91 98765 43210</span>
+          <span>Sikar, Rajasthan | Katrathal, Sikar 332024 | 📞 +91 9928114425</span>
         </div>
 
         {/* Social Media Icons */}

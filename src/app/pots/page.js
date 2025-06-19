@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
-import Image from "next/image";
-import { FaCartPlus } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { FaCartPlus } from "react-icons/fa";
 import { addToCart } from "../../redux/store/cardSlice";
-import styles from "../plants/plants.module.css";
+import styles from "../plants/plants.module.css"; // ✅ use same styles
+
 export default function PotsPage() {
   const [pots, setPots] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ export default function PotsPage() {
         const data = await res.json();
         setPots(data);
       } catch (error) {
-        console.error("Failed to fetch pots:", error);
+        console.error("Error fetching pots:", error);
       } finally {
         setLoading(false);
       }
@@ -41,17 +41,15 @@ export default function PotsPage() {
   if (loading) {
     return (
       <div className="bg-white min-h-screen flex items-center justify-center">
-      <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
+        <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
     );
   }
 
   return (
     <div className="min-h-screen px-6 pt-15 bg-white">
       <div className="max-w-6xl mx-auto text-center">
-        <h1 className="text-3xl font-bold text-green-700 mb-8">
-          🪴 Available Pots
-        </h1>
+        <h1 className="text-3xl font-bold text-green-700 mb-8">🪴 Available Pots</h1>
 
         {isAdmin && (
           <Link href="/pots/add">
@@ -67,7 +65,7 @@ export default function PotsPage() {
           {pots.map((pot) => (
             <div
               key={pot._id}
-              className="bg-white rounded-lg shadow-md  flex flex-col"
+              className="bg-white rounded-lg shadow-md flex flex-col"
             >
               <img
                 src={pot.imageUrl}
@@ -75,15 +73,15 @@ export default function PotsPage() {
                 className="w-45 h-35 sm:h-40 object-fill rounded-lg"
               />
 
-              <h2 className="text-xl font-semibold text-green-800 mb-1">
+              <h2 className="text-xl font-semibold text-green-800 ">
                 {pot.name}
               </h2>
 
-              <p className="text-gray-600 text-sm ">
+              {/* <p className="text-gray-600 text-sm">
                 <strong>Size:</strong> {pot.size}
-              </p>
+              </p> */}
 
-              <div className="flex justify-around items-center mb-2">
+              <div className="flex justify-around items-center ">
                 <span className="text-green-700 font-bold text-lg">
                   ₹{pot.price}
                 </span>
@@ -103,9 +101,9 @@ export default function PotsPage() {
 
                 <button
                   onClick={() => handleAddToCart(pot)}
-                  className={`px-1 py-1.5 rounded text-sm flex items-center justify-center w-full ${
+                  className={`cursor-pointer px-1 py-1.5 rounded text-sm flex items-center justify-center w-full ${
                     pot.stock
-                      ? "bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+                      ? "bg-green-500 text-white hover:bg-green-600"
                       : "bg-gray-400 text-gray-700 cursor-not-allowed"
                   }`}
                   title={pot.stock ? "Add to Cart" : "Out of Stock"}
