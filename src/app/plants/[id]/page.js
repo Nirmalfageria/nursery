@@ -98,15 +98,15 @@ const PlantDetailPage = ({ params }) => {
           <p className="text-gray-600 text-justify">{plant.description}</p>
 
           <div>
-            <span className="text-green-700 text-xl font-bold">
+            <span className="text-green-700 text-xl font-bold p-1">
               ₹{plant.price}
             </span>
           </div>
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 p-1">
             Category: {plant.category}
           </p>
-          <p className={`text-sm ${plant.stock > 0 ? "text-green-500" : "text-red-500"}`}>
+          <p className={`p-1 text-sm ${plant.stock > 0 ? "text-green-500" : "text-red-500"}`}>
             {plant.stock > 0 ? "In Stock" : "Out of Stock"}
           </p>
 

@@ -1,8 +1,9 @@
 "use client";
+
 import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Menu, X, ShoppingCart, LayoutDashboard, Leaf } from "lucide-react";
+import { Menu, X, ShoppingCart, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -11,12 +12,30 @@ export default function Navbar() {
     state.cart.items.reduce((total, item) => total + item.quantity, 0)
   );
 
-  return (
-   <nav className="bg-white text-black px-4 md:py-1 shadow-md fixed top-0 w-full z-50 backdrop-blur bg-white/95">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        {/* Logo */}
-        <Link href="/" className="flex items-center  text-lg font-semibold">
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/plants", label: "Plants" },
+    { href: "/seeds", label: "Seeds" },
+    { href: "/fertilizers", label: "Fertilizers" },
+    { href: "/pots", label: "Pots" },
+    { href: "/services", label: "Services" },
+  ];
 
+  const mobileLabels = {
+    "/": "Home",
+    "/plants": "Plants",
+    "/seeds": "Seeds",
+    "/fertilizers": "Fertilizers",
+    "/pots": "Pots",
+    "/services": "Services",
+    "/account": "My Account",
+  };
+
+  return (
+    <nav className="bg-white text-black px-4 md:py-1 shadow-md fixed top-0 w-full z-50 backdrop-blur bg-white/95 font-poppins">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        {/* Logo and Title */}
+        <Link href="/" className="flex items-center text-xl font-bold tracking-wide text-green-800">
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -29,55 +48,42 @@ export default function Navbar() {
               loop
               muted
               playsInline
-              className=" h-9 object-cover pb-1"
+              className="h-10 object-cover pb-1"
             />
           </motion.div>
-              Bageechi
+          <span className="ml-2">Bageechi</span>
         </Link>
 
-        {/* Desktop Links with Icons */}
+        {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8 font-semibold items-center text-lg">
-          {[
-            { href: "/", label: "Home" },
-            { href: "/plants", label: "Plants" },
-            {href:"/seeds",label:"Seeds"},
-            { href: "/pots", label: "Pots" },
-            {href:"/fertilizers",label:"Fertilizers"},
-            { href: "/services", label: "Services" },
-          ].map(({ href, label }) => (
+          {navLinks.map(({ href, label }) => (
             <Link key={href} href={href} className="group relative transition">
-              <span className="group-hover:text-green-700 transition">
-                {label}
-              </span>
+              <span className="group-hover:text-green-700 transition">{label}</span>
               <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-green-700 transition-all duration-300 group-hover:w-full"></span>
             </Link>
           ))}
 
-          {/* Cart Icon */}
-          <Link
-            href="/cart"
-            className="relative flex items-center gap-1 group text-lg"
-          >
+          {/* Cart */}
+          <Link href="/cart" className="relative flex items-center gap-1 group text-lg">
             <ShoppingCart size={20} />
             <span className="group-hover:text-green-700">Cart</span>
-            {cartCount > 0 && ( <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-              {cartCount}
-            </span>)}
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
             <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-green-700 transition-all duration-300 group-hover:w-full"></span>
           </Link>
 
-          {/* Dashboard Icon */}
-          <Link
-            href="/account"
-            className="flex items-center gap-1 group text-lg"
-          >
+          {/* Dashboard */}
+          <Link href="/account" className="flex items-center gap-1 group text-lg">
             <LayoutDashboard size={20} />
             <span className="group-hover:text-green-700">Account</span>
             <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-green-700 transition-all duration-300 group-hover:w-full"></span>
           </Link>
         </div>
 
-        {/* Mobile Cart + Hamburger */}
+        {/* Mobile Icons */}
         <div className="md:hidden p-1 flex items-center gap-4 h-full cursor-pointer">
           <Link href="/cart" className="relative" aria-label="Cart">
             <ShoppingCart size={35} className="hover:text-green-200" />
@@ -87,13 +93,17 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu" className="cursor-pointer">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle Menu"
+            className="cursor-pointer"
+          >
             {isOpen ? <X size={38} /> : <Menu size={38} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -103,36 +113,30 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="md:hidden fixed top-0 left-0 w-full h-screen bg-green-900/90 backdrop-blur-sm z-40 text-white flex flex-col justify-center items-center space-y-6 px-4"
           >
-            {/* Close button */}
             <button
               onClick={() => setIsOpen(false)}
               aria-label="Close Menu"
-              className="absolute top-5 right-5 text-white cursor-pointer "
+              className="absolute top-5 right-5 text-white cursor-pointer"
             >
               <X size={46} />
             </button>
 
-            {/* Navigation Links */}
-            {["/", "/plants","/seeds" ,"/fertilizers","/services", "/pots", "/account"].map(
-              (path, index) => (
-                <motion.div
-                  key={path}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
+            {Object.entries(mobileLabels).map(([path, label], index) => (
+              <motion.div
+                key={path}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+              >
+                <Link
+                  href={path}
+                  onClick={() => setIsOpen(false)}
+                  className="text-2xl font-semibold hover:text-green-300 transition"
                 >
-                  <Link
-                    href={path}
-                    onClick={() => setIsOpen(false)}
-                    className="text-2xl font-semibold hover:text-green-300 transition"
-                  >
-                    {path === "/"
-                      ? "Home"
-                      : path.slice(1).charAt(0).toUpperCase() + path.slice(2)}
-                  </Link>
-                </motion.div>
-              )
-            )}
+                  {label}
+                </Link>
+              </motion.div>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
