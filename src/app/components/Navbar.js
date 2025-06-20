@@ -42,6 +42,7 @@ export default function Navbar() {
             { href: "/plants", label: "Plants" },
             {href:"/seeds",label:"Seeds"},
             { href: "/pots", label: "Pots" },
+            {href:"/fertilizers",label:"Fertilizers"},
             { href: "/services", label: "Services" },
           ].map(({ href, label }) => (
             <Link key={href} href={href} className="group relative transition">
@@ -112,7 +113,7 @@ export default function Navbar() {
             </button>
 
             {/* Navigation Links */}
-            {["/", "/plants","/seeds" ,"/services", "/pots", "/account"].map(
+            {["/", "/plants","/seeds" ,"/fertilizers","/services", "/pots", "/account"].map(
               (path, index) => (
                 <motion.div
                   key={path}

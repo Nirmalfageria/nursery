@@ -1,5 +1,5 @@
 import connectDB from "../../../db/index";
-import Fertilizer from "../../../models/fertilizer.model";
+import Fertilizer from "../../../models/fertilizers.model";
 import { NextResponse } from 'next/server';
 
 // ✅ POST: Create a new fertilizer

@@ -28,9 +28,9 @@ export default function CartSnackbar() {
         <button
           onClick={() => router.push("/cart")}
           aria-label="Go to Cart"
-          className="bg-white text-green-700 p-2 sm:p-2 rounded-full hover:bg-gray-100 transition"
+          className=" bg-white text-green-700 p-2 sm:p-2 rounded-full hover:bg-gray-100 transition"
         >
-          <FaShoppingCart className="text-base sm:text-lg" />
+          <FaShoppingCart className="cursor-pointer text-base sm:text-lg" />
         </button>
       </div>
     </div>

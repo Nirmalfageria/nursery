@@ -80,38 +80,35 @@ const FertilizerDetailPage = ({ params }) => {
   }
 
   return (
-    <div className="flex justify-center items-center p-6 max-w-4xl mx-auto pt-15 bg-white">
-      <div className="relative rounded-lg shadow-md p-6 flex w-full flex-col md:flex-row">
+    <div className="flex justify-center items-center p-4 max-w-4xl mx-auto pt-15 bg-white">
+      <div className="relative rounded-lg shadow-md p-4 flex w-full flex-col md:flex-row">
         <div className="w-full md:w-1/2 flex justify-center items-center">
           <Image
             src={fertilizer.imageUrl || "/fallback.jpg"}
             alt={fertilizer.name}
-            width={300}
-            height={300}
+            width={250}
+            height={200}
             className="object-contain rounded-lg"
             priority
           />
         </div>
-        <div className="w-full md:w-1/2 mt-6 md:mt-0 md:pl-6">
-          <h1 className="text-2xl font-bold mb-2">{fertilizer.name}</h1>
-          <p className="text-gray-600 mb-2 text-justify">{fertilizer.description}</p>
-
-          <div className="mb-2">
+        <div className="w-full md:w-1/2 mt-4 md:mt-0 md:pl-4">
+          <h1 className="text-2xl font-bold mb-1">{fertilizer.name}</h1>
+          <p className="text-gray-600 text-2xs text-justify mb-1">{fertilizer.description}</p>
+          <div className="mb-1">
             <span className="text-green-700 text-xl font-bold">
               ₹{fertilizer.pricePerUnit}
               <span className="text-sm text-gray-500 ml-1">({fertilizer.priceUnit})</span>
             </span>
           </div>
-
-          <p className="text-sm text-gray-500 mb-1">Category: {fertilizer.category}</p>
+          <p className="text-sm text-gray-500 mb-0.5">Category: {fertilizer.category}</p>
           <p
-            className={`text-sm mb-4 ${
+            className={`text-sm mb-2 ${
               fertilizer.inStock ? "text-green-500" : "text-red-500"
             }`}
           >
             {fertilizer.inStock ? "In Stock" : "Out of Stock"}
           </p>
-
           <button
             className={`py-2 px-6 rounded ${
               fertilizer.inStock
@@ -123,9 +120,8 @@ const FertilizerDetailPage = ({ params }) => {
           >
             Add to Cart
           </button>
-
           {isAdmin && (
-            <div className="mt-4 flex gap-2">
+            <div className="mt-2 flex gap-2">
               <Link href={`/fertilizers/edit/${fertilizer._id}`}>
                 <button className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 cursor-pointer">
                   Edit

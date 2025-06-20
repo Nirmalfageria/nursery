@@ -127,21 +127,27 @@ export default function EditPlantPage() {
           </div>
 
           <div className="mb-4">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={plant.description}
-              onChange={handleChange}
-              required
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded"
-            />
-          </div>
+  <label
+    htmlFor="description"
+    className="block text-sm font-medium text-gray-700"
+  >
+    Description
+  </label>
+  <textarea
+    id="description"
+    name="description"
+    value={plant.description}
+    onChange={(e) => {
+      handleChange(e);
+      e.target.style.height = "auto"; // Reset height
+      e.target.style.height = `${e.target.scrollHeight}px`; // Set to scroll height
+    }}
+    required
+    rows={3} // starting height
+    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded resize-none overflow-hidden"
+  />
+</div>
+
 
           <div className="mb-4">
             <label
@@ -233,7 +239,7 @@ export default function EditPlantPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="cursor-pointer w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             {loading ? "Updating..." : "Update Plant"}
           </button>

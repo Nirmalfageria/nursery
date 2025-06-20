@@ -1,5 +1,5 @@
 import connectDB from "../../../../db/index";
-import Fertilizer from "../../../../models/fertilizer.model";
+import Fertilizer from "../../../../models/fertilizers.model";
 
 // ✅ GET: Get a specific fertilizer by ID
 export async function GET(request, { params }) {

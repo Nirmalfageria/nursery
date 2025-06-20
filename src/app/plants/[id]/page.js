@@ -1,15 +1,16 @@
 "use client";
-import { useRouter } from "next/navigation"; // ✅ Correct import for App Router
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/store/cardSlice";
 import Image from "next/image";
 import { PlaySquare } from "lucide-react";
+
 const PlantDetailPage = ({ params }) => {
   const { id } = params;
   const dispatch = useDispatch();
-  const router = useRouter(); // ✅ from next/navigation
+  const router = useRouter();
   const isAdmin = useSelector((state) => state.admin.isAdmin);
   const cart = useSelector((state) => state.cart);
 
@@ -43,7 +44,7 @@ const PlantDetailPage = ({ params }) => {
   const handleAddToCart = (plant) => {
     dispatch(addToCart(plant));
     alert("Added to the Cart");
-    router.push("/plants"); 
+    router.push("/plants");
   };
 
   const handleDelete = async (plantId) => {
@@ -60,17 +61,18 @@ const PlantDetailPage = ({ params }) => {
       if (!res.ok) throw new Error("Failed to delete plant.");
 
       alert("Plant deleted successfully!");
-      router.push("/plants"); // ✅ Correct usage of App Router navigation
+      router.push("/plants");
     } catch (error) {
       alert("Error deleting plant.");
       console.error(error);
     }
   };
+
   if (loading) {
     return (
       <div className="bg-white min-h-screen flex items-center justify-center">
-      <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
+        <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
     );
   }
 
@@ -79,8 +81,8 @@ const PlantDetailPage = ({ params }) => {
   }
 
   return (
-    <div className="flex justify-center items-center p-6 max-w-4xl mx-auto pt-15 bg-white">
-      <div className="relative rounded-lg shadow-md p-6 flex w-full flex-col md:flex-row ">
+    <div className="flex justify-center items-center max-w-4xl mx-auto bg-white p-2 pt-15 ">
+      <div className="relative rounded-lg shadow-md flex w-full flex-col md:flex-row p-4">
         <div className="w-full md:w-1/2 flex justify-center items-center">
           <Image
             src={plant.imageUrl || "/fallback.jpg"}
@@ -91,20 +93,20 @@ const PlantDetailPage = ({ params }) => {
             priority
           />
         </div>
-        <div className="w-full md:w-1/2 mt-6 md:mt-0 md:pl-6">
-          <h1 className="text-2xl font-bold mb-2">{plant.name}</h1>
-          <p className="text-gray-600 mb-2 text-justify">{plant.description}</p>
+        <div className="w-full md:w-1/2">
+          <h1 className="text-2xl font-bold">{plant.name}</h1>
+          <p className="text-gray-600 text-justify">{plant.description}</p>
 
-          <div className="mb-2">
+          <div>
             <span className="text-green-700 text-xl font-bold">
               ₹{plant.price}
             </span>
           </div>
 
-          <p className="text-sm text-gray-500 mb-1">
+          <p className="text-sm text-gray-500">
             Category: {plant.category}
           </p>
-          <p className={`text-sm mb-4 ${plant.stock > 0 ? "text-green-500" : "text-red-500"}`}>
+          <p className={`text-sm ${plant.stock > 0 ? "text-green-500" : "text-red-500"}`}>
             {plant.stock > 0 ? "In Stock" : "Out of Stock"}
           </p>
 
@@ -121,7 +123,7 @@ const PlantDetailPage = ({ params }) => {
           </button>
 
           {isAdmin && (
-            <div className="mt-4 flex gap-2">
+            <div className="flex gap-2 mt-2">
               <Link href={`/plants/edit/${plant._id}`}>
                 <button className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 cursor-pointer">
                   Edit
