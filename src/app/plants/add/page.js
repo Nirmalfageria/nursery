@@ -84,7 +84,7 @@ export default function AddPlantPage() {
     if (loading) {
       return (
         <div className="bg-white min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        <div  className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
       );
   }
