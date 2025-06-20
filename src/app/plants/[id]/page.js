@@ -111,6 +111,7 @@ const PlantDetailPage = ({ params }) => {
           </p>
 
           <button
+          
             className={`py-2 px-6 rounded  ${
               plant.stock === 0
                 ? "bg-gray-400 text-gray-700 cursor-not-allowed"
