@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import { ReduxProvider } from "../redux/provider";
 import WhatsappButton from "./components/WhastappButton";
 import HydrateAdmin from "./components/HydrateAdmin";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import Footer from "./components/Footer";
 import CartSnackbar from './components/CartSnackbar'
 const geistSans = Geist({
@@ -61,6 +63,8 @@ export default function RootLayout({ children }) {
           <WhatsappButton />
           <Footer />
         </ReduxProvider>
+           <Analytics />
+           <SpeedInsights/>
         <div id="recaptcha-container" style={{ display: "none" }} />
       </body>
     </html>
