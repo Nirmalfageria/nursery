@@ -13,7 +13,7 @@ import PotsPage from '../pots/page';      // Import pots page component
 const sliderImages = [
   { src: '/temp/banner1.jpeg', alt: 'Indoor Plants Collection' },
   
-    { src: '/temp/banner3.jpeg', alt: 'Decorative Pots & Planters' },
+
   { src: '/temp/banner2.jpeg', alt: 'Grow Your Green Space' },
 
  
