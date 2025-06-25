@@ -12,8 +12,6 @@ export default function Dashboard() {
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const [bookingStatus, setBookingStatus] = useState("all");
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -89,23 +87,20 @@ export default function Dashboard() {
     router.push("/account/edit");
   };
 
-  const handleStatusChange = async (orderId, newStatus) => {
-    try {
-      const res = await fetch(`/api/admin/orders/${orderId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (res.ok) {
-        setOrders((prev) =>
-          prev.map((o) => (o._id === orderId ? { ...o, status: newStatus } : o))
-        );
-      }
-    } catch (err) {
-      console.error("Failed to update status:", err);
-    }
+  const goToOrderPage = (status) => {
+    router.push(`/account/orders/${status}`);
   };
+
+  const isAdmin = userData?.role === "admin";
+
+  const statusStyles = {
+    pending: { color: "bg-yellow-100 text-yellow-700", label: "Pending" },
+    shipped: { color: "bg-blue-100 text-blue-700", label: "Shipped" },
+    delivered: { color: "bg-green-100 text-green-700", label: "Delivered" },
+    cancelled: { color: "bg-red-100 text-red-700", label: "Cancelled" },
+  };
+
+  const orderStatuses = ["pending", "shipped", "delivered", "cancelled"];
 
   if (isLoading)
     return (
@@ -129,28 +124,6 @@ export default function Dashboard() {
       </div>
     );
 
-  const isAdmin = userData?.role === "admin";
-
-  const statusStyles = {
-    pending: { color: "bg-yellow-100 text-yellow-700", label: "Pending" },
-    shipped: { color: "bg-blue-100 text-blue-700", label: "Shipped" },
-    delivered: { color: "bg-green-100 text-green-700", label: "Delivered" },
-    cancelled: { color: "bg-red-100 text-red-700", label: "Cancelled" },
-  };
-
-  const orderStatuses = ["pending", "shipped", "delivered", "cancelled"];
-  const bookingStatuses = [...new Set(bookings.map((b) => b.status))];
-
-  const filteredOrders =
-    selectedStatus === "all"
-      ? orders
-      : orders.filter((order) => order.status === selectedStatus);
-
-  const filteredBookings =
-    bookingStatus === "all"
-      ? bookings
-      : bookings.filter((b) => b.status === bookingStatus);
-
   return (
     <div className="min-h-screen bg-green-50 py-6">
       <main className="max-w-5xl mx-auto px-6 py-10 space-y-12">
@@ -160,17 +133,17 @@ export default function Dashboard() {
           </div>
           <div className="flex-1">
             <h2 className="text-2xl font-bold text-green-800 mb-1">
-              {userData.fullName || userData.username}
+              {userData?.fullName || userData?.username}
             </h2>
             <p className="text-gray-600 mb-2 capitalize">
-              {userData.role === "admin" ? "Admin" : "Customer"}
+              {userData?.role === "admin" ? "Admin" : "Customer"}
             </p>
             <div className="flex flex-col gap-1 text-gray-700 text-sm mb-2">
               <span className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                {userData.email}
+                {userData?.email}
               </span>
-              {userData.phoneNumber && (
+              {userData?.phoneNumber && (
                 <span className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
                   {userData.phoneNumber}
@@ -194,93 +167,25 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Orders Section */}
+        {/* Orders Section - Status Summary */}
         <section>
           <h2 className="text-xl font-semibold text-green-800 mb-4">
-            {isAdmin ? "All Orders" : "Your Orders"}
+            {isAdmin ? "All Orders Overview" : "Your Orders Overview"}
           </h2>
-          <div className="flex gap-4 mb-6 flex-wrap">
-            <div onClick={() => setSelectedStatus("all")} className={`cursor-pointer px-4 py-2 rounded-xl shadow text-sm font-medium ${selectedStatus === "all" ? "bg-green-600 text-white" : "bg-white text-green-700 border border-green-300"}`}>
-              All ({orders.length})
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {orderStatuses.map((status) => {
               const count = orders.filter((o) => o.status === status).length;
+              if (count === 0) return null;
               return (
                 <div
                   key={status}
-                  onClick={() => setSelectedStatus(status)}
-                  className={`cursor-pointer px-4 py-2 rounded-xl shadow text-sm font-medium capitalize ${selectedStatus === status ? "bg-green-600 text-white" : "bg-white text-green-700 border border-green-300"}`}
+                  className="cursor-pointer bg-white p-4 rounded-xl shadow hover:shadow-md border border-gray-200"
+                  onClick={() => goToOrderPage(status)}
                 >
-                  {statusStyles[status].label} ({count})
-                </div>
-              );
-            })}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredOrders.map((order) => {
-              const status = statusStyles[order.status] || statusStyles.pending;
-              const total =
-                order.totalAmount ||
-                order.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-              return (
-                <div key={order._id} className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl flex flex-col p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${status.color}`}>
-                      {status.label}
-                    </span>
-                    <span className="text-xs text-gray-400">
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </span>
+                  <div className={`text-sm font-medium mb-1 ${statusStyles[status].color}`}>
+                    {statusStyles[status].label}
                   </div>
-                  <div className="flex flex-col gap-2 mb-2">
-                    {order.items.slice(0, 2).map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        {item.imageUrl && (
-                          <img
-                            src={item.imageUrl}
-                            alt={item.common_name}
-                            className="w-8 h-8 rounded object-cover border"
-                          />
-                        )}
-                        <span className="font-medium text-gray-800 truncate">
-                          {item.common_name || item.name}
-                        </span>
-                        <span className="text-xs text-gray-500 ml-auto">
-                          x{item.quantity}
-                        </span>
-                      </div>
-                    ))}
-                    {order.items.length > 2 && (
-                      <div className="text-xs text-gray-400 pl-10">
-                        +{order.items.length - 2} more
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-xs text-gray-500 mb-1">
-                    {order.address?.street}, {order.address?.city} {order.address?.pincode}
-                  </div>
-                  {isAdmin && order.user && (
-                    <div className="text-xs text-gray-400 mb-1">
-                      <span className="font-medium text-gray-700">By:</span> {order.user.fullName || order.user.username || "Unknown"}
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between mt-auto pt-2">
-                    <span className="font-bold text-green-700 text-lg">₹{total}</span>
-                    <span className="text-xs text-gray-400 uppercase">{order.paymentMethod || "COD"}</span>
-                  </div>
-                  {isAdmin && (
-                    <div className="mt-2">
-                      <select
-                        className="border rounded px-2 py-1 text-xs"
-                        value={order.status}
-                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                      >
-                        {orderStatuses.map((s) => (
-                          <option key={s} value={s}>{statusStyles[s].label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                  <div className="text-2xl font-bold text-green-800">{count}</div>
                 </div>
               );
             })}
@@ -292,45 +197,35 @@ export default function Dashboard() {
           <h2 className="text-xl font-semibold text-green-800 mb-4">
             {isAdmin ? "All Bookings" : "Your Bookings"}
           </h2>
-          <div className="flex gap-4 mb-6 flex-wrap">
-            <div onClick={() => setBookingStatus("all")} className={`cursor-pointer px-4 py-2 rounded-xl shadow text-sm font-medium ${bookingStatus === "all" ? "bg-green-600 text-white" : "bg-white text-green-700 border border-green-300"}`}>
-              All ({bookings.length})
-            </div>
-            {bookingStatuses.map((status) => {
-              const count = bookings.filter((b) => b.status === status).length;
-              return (
+          {bookings.length === 0 ? (
+            <p className="text-gray-600">No bookings found.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {bookings.map((booking) => (
                 <div
-                  key={status}
-                  onClick={() => setBookingStatus(status)}
-                  className={`cursor-pointer px-4 py-2 rounded-xl shadow text-sm font-medium capitalize ${bookingStatus === status ? "bg-green-600 text-white" : "bg-white text-green-700 border border-green-300"}`}
+                  key={booking._id}
+                  className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl flex flex-col p-4"
                 >
-                  {status} ({count})
-                </div>
-              );
-            })}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredBookings.map((booking) => (
-              <div key={booking._id} className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl flex flex-col p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-green-700 font-semibold">
-                    {booking.serviceName}
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    {new Date(booking.date).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500 mb-1">
-                  Status: <span className="capitalize">{booking.status}</span>
-                </div>
-                {isAdmin && booking.user && (
-                  <div className="text-xs text-gray-400 mb-1">
-                    <span className="font-medium text-gray-700">By:</span> {booking.user.fullName || booking.user.username || "Unknown"}
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-green-700 font-semibold">
+                      {booking.serviceName}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {new Date(booking.date).toLocaleDateString()}
+                    </span>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  <div className="text-xs text-gray-500 mb-1">
+                    Status: <span className="capitalize">{booking.status}</span>
+                  </div>
+                  {isAdmin && booking.user && (
+                    <div className="text-xs text-gray-400 mb-1">
+                      <span className="font-medium text-gray-700">By:</span> {booking.user.fullName || booking.user.username || "Unknown"}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </div>
