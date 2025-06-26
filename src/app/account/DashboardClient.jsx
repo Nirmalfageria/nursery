@@ -8,6 +8,11 @@ import { setAdmin } from "../../redux/store/adminSlice";
 import Link from "next/link";
 import { UserCircle, Mail, Phone } from "lucide-react";
 
+// Helper function to match capitalized statuses like "Pending"
+function capitalizeFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export default function DashboardClient() {
   const [userData, setUserData] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -39,6 +44,7 @@ export default function DashboardClient() {
         setIsLoading(false);
       }
     }
+
     fetchData();
   }, [dispatch, router]);
 
@@ -49,24 +55,40 @@ export default function DashboardClient() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-red-600">
         <p>{error}</p>
-        <button onClick={() => router.push("/login")} className="mt-4 bg-green-600 text-white px-4 py-2 rounded">Go to Login</button>
+        <button
+          onClick={() => router.push("/login")}
+          className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Go to Login
+        </button>
       </div>
     );
 
-  const getCount = (status) => orders.filter((o) => o.status === status).length;
+  const getCount = (status) =>
+    orders.filter((o) => o.status === capitalizeFirst(status)).length;
 
   return (
     <div className="min-h-screen bg-green-50 py-6 px-6 max-w-5xl mx-auto space-y-8">
+      {/* User Card */}
       <div className="bg-white p-6 rounded-xl flex items-center gap-4 shadow">
         <UserCircle className="w-16 h-16 text-green-400 bg-green-100 p-2 rounded-full" />
         <div className="flex-1">
-          <h2 className="text-2xl font-bold text-green-800">{userData.fullName || userData.username}</h2>
+          <h2 className="text-2xl font-bold text-green-800">
+            {userData.fullName || userData.username}
+          </h2>
           <p className="capitalize">{userData.role}</p>
-          <p><Mail className="inline w-4 h-4" /> {userData.email}</p>
-          {userData.phoneNumber && <p><Phone className="inline w-4 h-4" /> {userData.phoneNumber}</p>}
+          <p>
+            <Mail className="inline w-4 h-4" /> {userData.email}
+          </p>
+          {userData.phoneNumber && (
+            <p>
+              <Phone className="inline w-4 h-4" /> {userData.phoneNumber}
+            </p>
+          )}
         </div>
       </div>
 
+      {/* Order Status Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {["pending", "shipped", "delivered", "cancelled"].map((status) => (
           <Link key={status} href={`/account/orders/${status}`}>
