@@ -5,10 +5,12 @@ import User from "../../../models/user.model";
 export async function GET(request) {
   try {
     await dbconnect();
-    
-    // Alternative session check (example using session ID)
-    const sessionId = request.cookies.get('session')?.value;
-    
+
+    const cookie = request.cookies.get('session');
+    const sessionId = cookie?.value;
+
+    console.log("Session cookie:", sessionId);
+
     if (!sessionId) {
       return NextResponse.json(
         { message: 'Not authenticated', success: false },
@@ -16,10 +18,7 @@ export async function GET(request) {
       );
     }
 
-    // Find user by session ID (you'll need a sessions collection)
-    const user = await User.findOne({ 
-      _id: sessionId 
-    }).select('-password');
+    const user = await User.findById(sessionId).select('-password');
 
     if (!user) {
       return NextResponse.json(
