@@ -1,6 +1,5 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -8,7 +7,6 @@ import { setAdmin } from "../../redux/store/adminSlice";
 import Link from "next/link";
 import { UserCircle, Mail, Phone, Pencil, Trash2, LogOut } from "lucide-react";
 
-// Capitalizes the first letter of a status string
 const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
 export default function DashboardClient() {
@@ -73,9 +71,27 @@ export default function DashboardClient() {
     }
   };
 
-  const handleLogout = () => {
-    Cookies.remove("session");
-    router.replace("/login");
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+       
+        setUserData(null);
+        setOrders([]);
+        router.replace("/login");
+      } else {
+        alert("Logout failed: " + data.message);
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+      alert("An error occurred during logout.");
+    }
   };
 
   const getCount = (status) => {
@@ -87,10 +103,10 @@ export default function DashboardClient() {
     return <div className="min-h-screen flex justify-center items-center">Loading...</div>;
   }
 
-  if (error) {
+  if (error || !userData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-red-600">
-        <p>{error}</p>
+        <p>{error || "Unauthorized"}</p>
         <button
           onClick={() => router.push("/login")}
           className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
@@ -124,7 +140,7 @@ export default function DashboardClient() {
         </div>
 
         {/* Action Buttons */}
-        <div className=" flex flex-col sm:flex-row gap-2 sm:gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <button
             onClick={handleEditProfile}
             className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2"

@@ -12,18 +12,8 @@ export async function POST() {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      expires: new Date(0),
+      expires: new Date(0), // Expire immediately
     });
-
-    // ✅ Clear the isAdmin cookie too
-    response.cookies.set('isAdmin', '', {
-      httpOnly: false, // You likely set this from the client, so it shouldn't be httpOnly
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      expires: new Date(0),
-    });
-    
-  
 
     return response;
   } catch (error) {

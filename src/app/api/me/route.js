@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
-import dbconnect from "../../../db/index";
-import User from "../../../models/user.model";
+import dbconnect from '../../../db/index';
+import User from '../../../models/user.model';
 
 export async function GET(request) {
   try {
     await dbconnect();
 
-    const cookie = request.cookies.get('session');
-    const sessionId = cookie?.value;
-
-    console.log("Session cookie:", sessionId);
+    const sessionCookie = request.cookies.get('session');
+    const sessionId = sessionCookie?.value;
 
     if (!sessionId) {
       return NextResponse.json(
@@ -28,7 +26,17 @@ export async function GET(request) {
     }
 
     return NextResponse.json(
-      { user, success: true },
+      {
+        success: true,
+        user: {
+          id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          role: user.role,
+        },
+      },
       { status: 200 }
     );
 
@@ -36,7 +44,7 @@ export async function GET(request) {
     console.error('Auth check error:', error);
     return NextResponse.json(
       { message: 'Authentication failed', success: false },
-      { status: 401 }
+      { status: 500 }
     );
   }
 }
