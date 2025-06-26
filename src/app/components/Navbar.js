@@ -51,7 +51,7 @@ export default function Navbar() {
               className="h-10 object-cover pb-1"
             />
           </motion.div>
-          <span className="ml-2">Bageechi</span>
+          <span >Bageechi</span>
         </Link>
 
         {/* Desktop Menu */}

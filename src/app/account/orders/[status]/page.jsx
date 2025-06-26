@@ -1,10 +1,9 @@
 "use client";
 
-// import { s } from "framer-motion/dist/types.d-DSjX-LJB";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// Helper function to capitalize status for display
+// Capitalize helper
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
@@ -48,27 +47,6 @@ export default function StatusOrdersPage() {
     fetchOrders();
   }, [status, router]);
 
-  const handleStatusChange = async (orderId, newStatus) => {
-    try {
-      const res = await fetch(`/api/admin/orders/${orderId}`, {
-        method: "PATCH",
-        body: JSON.stringify({ status: newStatus }),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        // ✅ Refresh the page so the order moves to the new status category
-       router.refresh();
-      } else {
-        console.error("Failed to update:", data.message);
-      }
-    } catch (err) {
-      console.error("Failed to update status", err);
-    }
-  };
-
   useEffect(() => {
     const q = query.toLowerCase();
     if (!q) {
@@ -98,12 +76,35 @@ export default function StatusOrdersPage() {
     );
   }, [query, orders, user]);
 
-  if (isLoading)
+  const handleUpdate = async (orderId, changes) => {
+    const confirmChange = confirm("Are you sure you want to update the order?");
+    if (!confirmChange) return;
+
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PATCH",
+        body: JSON.stringify(changes),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.reload();
+      } else {
+        alert("Update failed: " + data.message);
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("An error occurred while updating.");
+    }
+  };
+
+  if (isLoading) {
     return (
       <div className="min-h-screen py-16 flex justify-center items-center">
         <p>Loading...</p>
       </div>
     );
+  }
 
   return (
     <div className="min-h-screen px-6 py-20 max-w-4xl mx-auto bg-green-50 space-y-6">
@@ -124,14 +125,11 @@ export default function StatusOrdersPage() {
       ) : (
         <div className="space-y-6">
           {filteredOrders.map((o) => (
-            <div key={o._id} className="bg-white p-6 rounded-xl shadow">
-             
-
+            <div key={o._id} className="bg-white p-6 rounded-xl shadow space-y-2">
               {user?.role === "admin" && (
                 <>
                   <p>
-                    <strong>Customer:</strong>{" "}
-                    {o.user?.fullName || o.user?.username || "N/A"}
+                    <strong>Customer:</strong> {o.user?.fullName || o.user?.username || "N/A"}
                   </p>
                   <p>
                     <strong>Email:</strong> {o.user?.email || "N/A"}
@@ -152,31 +150,49 @@ export default function StatusOrdersPage() {
               <p>
                 <strong>Payment Method:</strong> {o.paymentMethod || "N/A"}
               </p>
-              <p>
-                <strong>Payment Status:</strong>{" "}
-                {o.paymentStatus || "Pending"}
-              </p>
 
               {user?.role === "admin" ? (
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <select
-                    value={o.status}
-                    onChange={(e) =>
-                      handleStatusChange(o._id, e.target.value)
-                    }
-                    className="ml-2 border rounded px-2 py-1"
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </select>
-                </p>
+                <div className="space-y-2">
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    <select
+                      value={o.status}
+                      onChange={(e) =>
+                        handleUpdate(o._id, { status: e.target.value })
+                      }
+                      className="ml-2 border rounded px-2 py-1"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </p>
+
+                  <p>
+                    <strong>Payment Status:</strong>{" "}
+                    <select
+                      value={o.paymentStatus || "Pending"}
+                      onChange={(e) =>
+                        handleUpdate(o._id, { paymentStatus: e.target.value })
+                      }
+                      className="ml-2 border rounded px-2 py-1"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Paid">Paid</option>
+                  
+                    </select>
+                  </p>
+                </div>
               ) : (
-                <p>
-                  <strong>Status:</strong> {o.status}
-                </p>
+                <>
+                  <p>
+                    <strong>Status:</strong> {o.status}
+                  </p>
+                  <p>
+                    <strong>Payment Status:</strong> {o.paymentStatus || "Pending"}
+                  </p>
+                </>
               )}
 
               <p>

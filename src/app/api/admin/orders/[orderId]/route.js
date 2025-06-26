@@ -20,18 +20,25 @@ export async function PATCH(request, { params }) {
     }
 
     const body = await request.json();
-    const { status } = body;
+    const { status, paymentStatus } = body;
 
-    if (!status || typeof status !== 'string') {
-      return NextResponse.json({ message: 'Invalid status', success: false }, { status: 400 });
+    const updateFields = {};
+
+    if (status && typeof status === 'string') {
+      updateFields.status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     }
 
-    // Capitalize status if needed (optional, for consistent DB values)
-    const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+    if (paymentStatus && typeof paymentStatus === 'string') {
+      updateFields.paymentStatus = paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1).toLowerCase();
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return NextResponse.json({ message: 'No valid fields to update', success: false }, { status: 400 });
+    }
 
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
-      { status: formattedStatus },
+      updateFields,
       { new: true }
     ).populate('user', 'fullName username');
 
