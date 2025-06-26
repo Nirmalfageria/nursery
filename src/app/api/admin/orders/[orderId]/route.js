@@ -15,8 +15,8 @@ export async function PATCH(request, { params }) {
     await dbconnect();
 
     const user = await User.findById(session);
-    if (!user || user.role !== 'admin') {
-      return NextResponse.json({ message: 'Forbidden: Admins only', success: false }, { status: 403 });
+    if (!user) {
+      return NextResponse.json({ message: 'User not found', success: false }, { status: 404 });
     }
 
     const body = await request.json();
@@ -24,6 +24,7 @@ export async function PATCH(request, { params }) {
 
     const updateFields = {};
 
+    // Normalize status & paymentStatus
     if (status && typeof status === 'string') {
       updateFields.status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     }
@@ -36,17 +37,31 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ message: 'No valid fields to update', success: false }, { status: 400 });
     }
 
-    const updatedOrder = await Order.findByIdAndUpdate(
-      orderId,
-      updateFields,
-      { new: true }
-    ).populate('user', 'fullName username');
+    const order = await Order.findById(orderId).populate('user', 'fullName username');
 
-    if (!updatedOrder) {
+    if (!order) {
       return NextResponse.json({ message: 'Order not found', success: false }, { status: 404 });
     }
 
-    return NextResponse.json({ message: 'Order updated', order: updatedOrder, success: true }, { status: 200 });
+    // ✅ Admin can update anything
+    if (user.role === 'admin') {
+      Object.assign(order, updateFields);
+      await order.save();
+      return NextResponse.json({ message: 'Order updated', order, success: true }, { status: 200 });
+    }
+
+    // ✅ Customer can only cancel their own "Pending" order
+    if (user._id.equals(order.user._id)) {
+      if (updateFields.status === 'Cancelled' && order.status === 'Pending') {
+        order.status = 'Cancelled';
+        await order.save();
+        return NextResponse.json({ message: 'Order cancelled', order, success: true }, { status: 200 });
+      } else {
+        return NextResponse.json({ message: 'You can only cancel pending orders', success: false }, { status: 403 });
+      }
+    }
+
+    return NextResponse.json({ message: 'Forbidden: Not your order', success: false }, { status: 403 });
 
   } catch (error) {
     console.error('Error updating order:', error);

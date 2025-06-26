@@ -98,6 +98,29 @@ export default function StatusOrdersPage() {
     }
   };
 
+  const handleCancelOrder = async (orderId) => {
+    const confirmCancel = confirm("Are you sure you want to cancel this order?");
+    if (!confirmCancel) return;
+
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: "Cancelled" }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Order cancelled successfully.");
+        window.location.reload();
+      } else {
+        alert("Cancel failed: " + data.message);
+      }
+    } catch (err) {
+      console.error("Cancel error:", err);
+      alert("Something went wrong.");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen py-16 flex justify-center items-center">
@@ -128,15 +151,9 @@ export default function StatusOrdersPage() {
             <div key={o._id} className="bg-white p-6 rounded-xl shadow space-y-2">
               {user?.role === "admin" && (
                 <>
-                  <p>
-                    <strong>Customer:</strong> {o.user?.fullName || o.user?.username || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {o.user?.email || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {o.user?.phoneNumber || "N/A"}
-                  </p>
+                  <p><strong>Customer:</strong> {o.user?.fullName || o.user?.username || "N/A"}</p>
+                  <p><strong>Email:</strong> {o.user?.email || "N/A"}</p>
+                  <p><strong>Phone:</strong> {o.user?.phoneNumber || "N/A"}</p>
                 </>
               )}
 
@@ -147,9 +164,7 @@ export default function StatusOrdersPage() {
                   : "N/A"}
               </p>
 
-              <p>
-                <strong>Payment Method:</strong> {o.paymentMethod || "N/A"}
-              </p>
+              <p><strong>Payment Method:</strong> {o.paymentMethod || "N/A"}</p>
 
               {user?.role === "admin" ? (
                 <div className="space-y-2">
@@ -168,7 +183,6 @@ export default function StatusOrdersPage() {
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </p>
-
                   <p>
                     <strong>Payment Status:</strong>{" "}
                     <select
@@ -180,30 +194,47 @@ export default function StatusOrdersPage() {
                     >
                       <option value="Pending">Pending</option>
                       <option value="Paid">Paid</option>
-                  
                     </select>
                   </p>
                 </div>
               ) : (
                 <>
-                  <p>
-                    <strong>Status:</strong> {o.status}
-                  </p>
-                  <p>
-                    <strong>Payment Status:</strong> {o.paymentStatus || "Pending"}
-                  </p>
+                  <p><strong>Status:</strong> {o.status}</p>
+                  <p><strong>Payment Status:</strong> {o.paymentStatus || "Pending"}</p>
                 </>
               )}
 
-              <p>
-                <strong>Total Items:</strong> {o.items.length}
-              </p>
-              <p>
-                <strong>Total Amount:</strong> ₹{o.totalAmount || 0}
-              </p>
+              <p><strong>Total Items:</strong> {o.items.length}</p>
+              <p><strong>Total Amount:</strong> ₹{o.totalAmount || 0}</p>
+
+              {/* Items shown in horizontal tags */}
+              <div>
+                <strong>Items:</strong>{" "}
+                <div className="flex flex-wrap gap-3 mt-1 text-sm">
+                  {o.items.map((item, index) => (
+                    <span
+                      key={index}
+                      className="bg-green-100 text-green-800 px-3 py-1 rounded-full"
+                    >
+                      {item.name} (x{item.quantity})
+                    </span>
+                  ))}
+                </div>
+              </div>
+
               <p className="text-sm text-gray-500 mt-2">
                 Created at: {new Date(o.createdAt).toLocaleString()}
               </p>
+
+              {/* Show cancel button if user and order is pending */}
+              {user?.role !== "admin" && o.status === "Pending" && (
+                <button
+                  onClick={() => handleCancelOrder(o._id)}
+                  className="cursor-pointer mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  Cancel Order
+                </button>
+              )}
             </div>
           ))}
         </div>
