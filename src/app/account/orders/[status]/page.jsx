@@ -1,7 +1,13 @@
 "use client";
 
+// import { s } from "framer-motion/dist/types.d-DSjX-LJB";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
+// Helper function to capitalize status for display
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 
 export default function StatusOrdersPage() {
   const { status } = useParams();
@@ -42,27 +48,27 @@ export default function StatusOrdersPage() {
     fetchOrders();
   }, [status, router]);
 
-  // ✅ Admin status update handler
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await fetch(`/api/admin/orders/${orderId}`, {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
         method: "PATCH",
         body: JSON.stringify({ status: newStatus }),
         headers: { "Content-Type": "application/json" },
       });
 
-      setOrders((prev) =>
-        prev.map((o) => (o._id === orderId ? { ...o, status: newStatus } : o))
-      );
-      setFilteredOrders((prev) =>
-        prev.map((o) => (o._id === orderId ? { ...o, status: newStatus } : o))
-      );
+      const data = await res.json();
+
+      if (data.success) {
+        // ✅ Refresh the page so the order moves to the new status category
+       router.refresh();
+      } else {
+        console.error("Failed to update:", data.message);
+      }
     } catch (err) {
       console.error("Failed to update status", err);
     }
   };
 
-  // ✅ Search logic (includes paymentStatus)
   useEffect(() => {
     const q = query.toLowerCase();
     if (!q) {
@@ -102,10 +108,9 @@ export default function StatusOrdersPage() {
   return (
     <div className="min-h-screen px-6 py-20 max-w-4xl mx-auto bg-green-50 space-y-6">
       <h1 className="text-2xl font-bold text-green-800 capitalize">
-        Orders - {status}
+        Orders - {capitalize(status)}
       </h1>
 
-      {/* ✅ Search Bar */}
       <input
         type="text"
         placeholder="Search by name, ID, status, payment, etc."
@@ -120,11 +125,8 @@ export default function StatusOrdersPage() {
         <div className="space-y-6">
           {filteredOrders.map((o) => (
             <div key={o._id} className="bg-white p-6 rounded-xl shadow">
-              <p>
-                <strong>Order ID:</strong> {o._id}
-              </p>
+             
 
-              {/* 👤 Customer Info for Admin */}
               {user?.role === "admin" && (
                 <>
                   <p>
@@ -155,7 +157,6 @@ export default function StatusOrdersPage() {
                 {o.paymentStatus || "Pending"}
               </p>
 
-              {/* 👇 Admin can change status */}
               {user?.role === "admin" ? (
                 <p>
                   <strong>Status:</strong>{" "}

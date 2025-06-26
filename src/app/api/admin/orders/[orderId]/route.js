@@ -6,8 +6,8 @@ import User from '../../../../../models/user.model';
 export async function PATCH(request, { params }) {
   try {
     const { orderId } = params;
-
     const session = request.cookies.get('session')?.value;
+
     if (!session) {
       return NextResponse.json({ message: 'Unauthorized', success: false }, { status: 401 });
     }
@@ -22,13 +22,16 @@ export async function PATCH(request, { params }) {
     const body = await request.json();
     const { status } = body;
 
-    if (!status) {
-      return NextResponse.json({ message: 'Missing status in request', success: false }, { status: 400 });
+    if (!status || typeof status !== 'string') {
+      return NextResponse.json({ message: 'Invalid status', success: false }, { status: 400 });
     }
+
+    // Capitalize status if needed (optional, for consistent DB values)
+    const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
 
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
-      { status },
+      { status: formattedStatus },
       { new: true }
     ).populate('user', 'fullName username');
 
@@ -40,6 +43,10 @@ export async function PATCH(request, { params }) {
 
   } catch (error) {
     console.error('Error updating order:', error);
-    return NextResponse.json({ message: 'Server error', success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({
+      message: 'Server error',
+      success: false,
+      error: error.message,
+    }, { status: 500 });
   }
 }
