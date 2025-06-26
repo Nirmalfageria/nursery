@@ -11,7 +11,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [paymentMethod, setPaymentMethod] = useState("COD");
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -88,7 +88,8 @@ export default function CheckoutPage() {
             state, 
             pincode 
           },
-          paymentMethod: paymentMethod
+          paymentMethod: paymentMethod,
+          totalAmount: totalPrice
         }),
       });
 
@@ -232,13 +233,13 @@ export default function CheckoutPage() {
                 ? 'border-green-500 bg-green-50 shadow-md' 
                 : 'border-gray-200 hover:border-gray-300'
             }`}
-            onClick={() => setPaymentMethod('cod')}
+            onClick={() => setPaymentMethod('COD')}
           >
             <div className="flex items-center space-x-3">
               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                paymentMethod === 'cod' ? 'border-green-500' : 'border-gray-300'
+                paymentMethod === 'COD' ? 'border-green-500' : 'border-gray-300'
               }`}>
-                {paymentMethod === 'cod' && (
+                {paymentMethod === 'COD' && (
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 )}
               </div>
@@ -249,7 +250,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Credit/Debit Card */}
+          {/* Credit/Debit Card
           <div 
             className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
               paymentMethod === 'card' 
@@ -271,22 +272,22 @@ export default function CheckoutPage() {
                 <p className="text-sm text-gray-600">Visa, Mastercard, RuPay</p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* UPI */}
           <div 
             className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
-              paymentMethod === 'upi' 
+              paymentMethod === 'UPI' 
                 ? 'border-purple-500 bg-purple-50 shadow-md' 
                 : 'border-gray-200 hover:border-gray-300'
             }`}
-            onClick={() => setPaymentMethod('upi')}
+            onClick={() => setPaymentMethod('UPI')}
           >
             <div className="flex items-center space-x-3">
               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                paymentMethod === 'upi' ? 'border-purple-500' : 'border-gray-300'
+                paymentMethod === 'UPI' ? 'border-purple-500' : 'border-gray-300'
               }`}>
-                {paymentMethod === 'upi' && (
+                {paymentMethod === 'UPI' && (
                   <div className="w-3 h-3 rounded-full bg-purple-500"></div>
                 )}
               </div>

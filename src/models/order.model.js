@@ -10,6 +10,21 @@ const orderSchema = new mongoose.Schema({
       plantId: String,
     },
   ],
+  totalAmount: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  paymentMethod: {
+    type: String,
+    enum: ['COD', 'UPI'],
+    default: 'COD',
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['Pending', 'Paid'],
+    default: 'Pending',
+  },
   status: {
     type: String,
     default: 'Pending',

@@ -3,7 +3,7 @@ import dbconnect from '@/db/index';
 import Order from '@/models/order.model';
 import User from '@/models/user.model';
 import { cookies as getCookies } from 'next/headers'; // not used here but good for middleware
-
+// to place orders
 export async function POST(request) {
   try {
     const cookieHeader = request.headers.get('cookie') || '';
@@ -25,7 +25,7 @@ export async function POST(request) {
       return NextResponse.json({ message: 'Invalid session', success: false }, { status: 401 });
     }
 
-    const { cartItems, address } = await request.json();
+    const { cartItems, address ,pa} = await request.json();
 
     if (!cartItems || cartItems.length === 0) {
       return NextResponse.json({ message: 'Cart is empty', success: false }, { status: 400 });
