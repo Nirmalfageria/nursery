@@ -72,7 +72,7 @@ export default function SeedsPage() {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black text-xl font-semibold pr-4"
+              className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black text-xl font-semibold pr-3"
               aria-label="Clear"
             >
               &times;
