@@ -254,7 +254,7 @@ export default function EditPotPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="cursor-pointer w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             {loading ? "Updating..." : "Update Pot"}
           </button>
