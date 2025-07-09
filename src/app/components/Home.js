@@ -62,10 +62,10 @@ export default function Home() {
       </section>
 
       
-
+{/* 
       <section id="pots" className="">
         <PotsPage />
-      </section>
+      </section> */}
 
       
     </main>

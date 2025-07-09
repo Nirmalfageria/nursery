@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaCartPlus } from "react-icons/fa";
-import { FiRefreshCw } from "react-icons/fi";
 import { addToCart } from "../../redux/store/cardSlice";
 import styles from "../plants/plants.module.css";
 
@@ -14,8 +13,6 @@ export default function PotsPage() {
   const [filteredPots, setFilteredPots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
-  const [sortOrder, setSortOrder] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
   const isAdmin = useSelector((state) => state.admin.isAdmin);
@@ -39,39 +36,17 @@ export default function PotsPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = [...pots];
-
     const query = searchQuery.toLowerCase();
-    if (query) {
-      filtered = filtered.filter(
-        (pot) =>
-          pot.name.toLowerCase().includes(query) ||
-          pot.material.toLowerCase().includes(query) ||
-          pot.price.toString().includes(query)
-      );
-    }
-
-    if (selectedSize) {
-      filtered = filtered.filter((pot) => pot.size === selectedSize);
-    }
-
-    if (sortOrder === "asc") {
-      filtered.sort((a, b) => a.price - b.price);
-    } else if (sortOrder === "desc") {
-      filtered.sort((a, b) => b.price - a.price);
-    }
-
+    const filtered = pots.filter(
+      (pot) =>
+        pot.name.toLowerCase().includes(query) ||
+        pot.material.toLowerCase().includes(query)
+    );
     setFilteredPots(filtered);
-  }, [searchQuery, selectedSize, sortOrder, pots]);
+  }, [searchQuery, pots]);
 
   const handleAddToCart = (pot) => {
     dispatch(addToCart(pot));
-  };
-
-  const resetFilters = () => {
-    setSearchQuery("");
-    setSelectedSize("");
-    setSortOrder("");
   };
 
   if (loading) {
@@ -98,10 +73,10 @@ export default function PotsPage() {
         )}
 
         {/* Search Bar */}
-        <div className="relative w-full   mb-6">
+        <div className="relative w-full mb-6">
           <input
             type="text"
-            placeholder="Search by name, material, or price..."
+            placeholder="Search by name or material..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 border rounded-md shadow-sm pr-10 focus:outline-none focus:ring-2 focus:ring-black"
@@ -117,8 +92,8 @@ export default function PotsPage() {
           )}
         </div>
 
-        {/* Material Filter Buttons */}
-        <div className="flex flex-wrap gap-2 justify-center mb-4">
+        {/* Material Quick Buttons */}
+        <div className="flex flex-wrap gap-2 justify-center mb-6">
           {["Ceramic", "Plastic", "Terracotta", "Metal", "Concrete", "Wood"].map((material) => (
             <button
               key={material}
@@ -128,42 +103,6 @@ export default function PotsPage() {
               {material}
             </button>
           ))}
-        </div>
-
-        {/* Size and Sort Dropdowns */}
-        <div className="flex flex-wrap justify-center gap-4 mb-4">
-          <select
-            value={selectedSize}
-            onChange={(e) => setSelectedSize(e.target.value)}
-            className="cursor-pointer border px-3 py-2 rounded-md text-sm shadow-sm"
-          >
-            <option value="">All Sizes</option>
-            <option value="Small">Small</option>
-            <option value="Medium">Medium</option>
-            <option value="Large">Large</option>
-            <option value="Extra Large">Extra Large</option>
-          </select>
-
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className="cursor-pointer border px-3 py-2 rounded-md text-sm shadow-sm"
-          >
-            <option value="">Sort by Price</option>
-            <option value="asc">Low to High</option>
-            <option value="desc">High to Low</option>
-          </select>
-        </div>
-
-        {/* ✅ Reset Filters Button with Icon */}
-        <div className=" flex justify-center mb-8">
-          <button
-            onClick={resetFilters}
-            className="cursor-pointer flex items-center gap-2 px-4 py-1.5 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-md text-sm"
-          >
-            <FiRefreshCw className="text-base" />
-            Reset Filters
-          </button>
         </div>
 
         {/* Grid */}
@@ -223,3 +162,4 @@ export default function PotsPage() {
     </div>
   );
 }
+

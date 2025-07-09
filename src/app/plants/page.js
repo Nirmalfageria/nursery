@@ -3,51 +3,46 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FaCartPlus } from "react-icons/fa";
 import { addToCart } from "../../redux/store/cardSlice";
-import styles from "../plants/plants.module.css";
+import styles from "./plants.module.css";
 
-export default function PotsPage() {
-  const [pots, setPots] = useState([]);
-  const [filteredPots, setFilteredPots] = useState([]);
+export default function PlantsPage() {
+  const [plants, setPlants] = useState([]);
+  const [filteredPlants, setFilteredPlants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
-  const router = useRouter();
   const isAdmin = useSelector((state) => state.admin.isAdmin);
 
   useEffect(() => {
-    const fetchPots = async () => {
+    const fetchPlants = async () => {
       try {
-        const res = await fetch("/api/pots");
+        const res = await fetch("/api/plants");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        setPots(data);
-        setFilteredPots(data);
-      } catch (error) {
-        console.error("Error fetching pots:", error);
+        setPlants(data);
+        setFilteredPlants(data);
+      } catch (err) {
+        console.error("Error fetching plants:", err);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchPots();
+    fetchPlants();
   }, []);
 
   useEffect(() => {
-    const query = searchTerm.toLowerCase();
-    const filtered = pots.filter(
-      (pot) =>
-        pot.name.toLowerCase().includes(query) ||
-        pot.material.toLowerCase().includes(query) ||
-        pot.price.toString().includes(query)
+    const query = searchQuery.toLowerCase();
+    const result = plants.filter((plant) =>
+      plant.name.toLowerCase().includes(query) ||
+      (plant.category || "").toLowerCase().includes(query)
     );
-    setFilteredPots(filtered);
-  }, [searchTerm, pots]);
+    setFilteredPlants(result);
+  }, [searchQuery, plants]);
 
-  const handleAddToCart = (pot) => {
-    dispatch(addToCart(pot));
+  const handleAddToCart = (plant) => {
+    dispatch(addToCart(plant));
   };
 
   if (loading) {
@@ -59,44 +54,44 @@ export default function PotsPage() {
   }
 
   return (
-    <div className="min-h-screen px-6 pt-15 bg-white">
+    <div className="min-h-screen px-6 pt-15 bg-white pb-2">
       <div className="max-w-6xl mx-auto text-center">
-        <h1 className="text-3xl font-bold text-green-700 mb-6">Available Pots</h1>
+        <h1 className="text-3xl font-bold text-green-700 mb-6">Our Plants</h1>
 
         {isAdmin && (
-          <Link href="/pots/add">
+          <Link href="/plants/add">
             <button className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-              Add New Pot
+              Add New Plant
             </button>
           </Link>
         )}
 
         {/* Search Bar */}
-        <div className="relative w-full px-5 mx-auto mb-6 max-w-2xl">
+        <div className="relative w-full px-5 mx-auto mb-4">
           <input
             type="text"
-            placeholder="Search by name, material, or price..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name or category..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 pr-10 border rounded-md"
           />
-          {searchTerm && (
+          {searchQuery && (
             <button
-              onClick={() => setSearchTerm("")}
-              className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black text-xl font-semibold pr-4 mr-1"
-              aria-label="Clear"
+              onClick={() => setSearchQuery("")}
+              className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black text-xl font-semibold pr-4"
+              aria-label="Clear search"
             >
               &times;
             </button>
           )}
         </div>
 
-        {/* Quick Filter Buttons */}
+        {/* Category Quick Filters */}
         <div className="flex flex-wrap gap-2 justify-center mb-6">
-          {["Ceramic", "Plastic", "Terracotta", "Metal", "Concrete", "Wood"].map((label) => (
+          {["Flowering", "Fruit", "Seasonal", "Indoor", "Outdoor"].map((label) => (
             <button
               key={label}
-              onClick={() => setSearchTerm(label)}
+              onClick={() => setSearchQuery(label)}
               className="cursor-pointer px-3 py-1 bg-green-100 text-green-800 rounded-full hover:bg-green-200 text-sm"
             >
               {label}
@@ -104,57 +99,57 @@ export default function PotsPage() {
           ))}
         </div>
 
-        {/* Grid */}
+        {/* Plants Grid */}
         <div
           className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 justify-items-center ${styles.plantGrid}`}
         >
-          {filteredPots.length === 0 ? (
-            <p className="col-span-full text-gray-600">No matching pots found.</p>
+          {filteredPlants.length === 0 ? (
+            <p className="col-span-full text-gray-600">No matching plants found.</p>
           ) : (
-            filteredPots.map((pot) => (
+            filteredPlants.map((plant) => (
               <div
-                key={pot._id}
+                key={plant._id}
                 className="bg-white rounded-lg shadow-md flex flex-col"
               >
                 <img
-                  src={pot.imageUrl}
-                  alt={pot.name}
+                  src={plant.imageUrl}
+                  alt={plant.name}
                   className="w-45 h-35 sm:h-40 object-fill rounded-lg"
                 />
 
                 <h2 className="text-xl font-semibold text-green-800">
-                  {pot.name}
+                  {plant.name}
                 </h2>
 
-                <div className="flex justify-around items-center">
+                <div className="flex justify-around items-center mt-1">
                   <span className="text-green-700 font-bold text-lg">
-                    ₹{pot.price}
+                    ₹{plant.price}
                   </span>
                   <span
                     className={`text-sm font-medium ${
-                      pot.stock ? "text-green-600" : "text-red-500"
+                      plant.stock ? "text-green-600" : "text-red-500"
                     }`}
                   >
-                    {pot.stock ? "In Stock" : "Out of Stock"}
+                    {plant.stock ? "In Stock" : "Out of Stock"}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-[2fr_1fr] gap-1 mt-auto">
-                  <Link href={`/pots/${pot._id}`} className="w-full">
+                <div className="grid grid-cols-[2fr_1fr] gap-1 mt-auto pt-2">
+                  <Link href={`/plants/${plant._id}`} className="w-full">
                     <div className="bg-blue-500 text-white text-center w-full px-1 py-1.5 rounded hover:bg-blue-600 text-sm">
                       View Product
                     </div>
                   </Link>
 
                   <button
-                    onClick={() => handleAddToCart(pot)}
+                    onClick={() => handleAddToCart(plant)}
                     className={`cursor-pointer px-1 py-1.5 rounded text-sm flex items-center justify-center w-full ${
-                      pot.stock
+                      plant.stock
                         ? "bg-green-500 text-white hover:bg-green-600"
                         : "bg-gray-400 text-gray-700 cursor-not-allowed"
                     }`}
-                    title={pot.stock ? "Add to Cart" : "Out of Stock"}
-                    disabled={!pot.stock}
+                    title={plant.stock ? "Add to Cart" : "Out of Stock"}
+                    disabled={!plant.stock}
                   >
                     <FaCartPlus className="text-lg" />
                   </button>
