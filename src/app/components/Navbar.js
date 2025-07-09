@@ -15,18 +15,18 @@ export default function Navbar() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/plants", label: "Plants" },
+    { href: "/pots", label: "Pots" },
     { href: "/seeds", label: "Seeds" },
     { href: "/fertilizers", label: "Fertilizers" },
-    { href: "/pots", label: "Pots" },
     { href: "/services", label: "Services" },
   ];
 
   const mobileLabels = {
     "/": "Home",
     "/plants": "Plants",
+    "/pots": "Pots",
     "/seeds": "Seeds",
     "/fertilizers": "Fertilizers",
-    "/pots": "Pots",
     "/services": "Services",
     "/account": "My Account",
   };
