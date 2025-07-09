@@ -16,9 +16,7 @@ export default function PlantsPage() {
   const [loading, setLoading] = useState(true);
   const isAdmin = useSelector((state) => state.admin.isAdmin);
 
-  const [searchName, setSearchName] = useState("");
-  const [searchCategory, setSearchCategory] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchPlants = async () => {
@@ -41,27 +39,16 @@ export default function PlantsPage() {
   useEffect(() => {
     let filtered = plants;
 
-    if (searchName) {
+    if (searchTerm.trim()) {
+      const lower = searchTerm.toLowerCase();
       filtered = filtered.filter((plant) =>
-        plant.name.toLowerCase().includes(searchName.toLowerCase())
+        plant.name.toLowerCase().includes(lower) ||
+        (plant.category || "").toLowerCase().includes(lower)
       );
-    }
-
-    if (searchCategory) {
-      filtered = filtered.filter((plant) =>
-        (plant.category || "").toLowerCase().includes(searchCategory.toLowerCase())
-      );
-    }
-
-    if (maxPrice) {
-      const price = parseFloat(maxPrice);
-      if (!isNaN(price)) {
-        filtered = filtered.filter((plant) => plant.price <= price);
-      }
     }
 
     setFilteredPlants(filtered);
-  }, [searchName, searchCategory, maxPrice, plants]);
+  }, [searchTerm, plants]);
 
   const handleAddToCart = (plant) => {
     dispatch(addToCart(plant));
@@ -76,45 +63,52 @@ export default function PlantsPage() {
   }
 
   return (
-    <div className="min-h-screen px-6 pt-15 bg-white">
+    <div className="min-h-screen px-6 pt-15 bg-white pb-2">
       <div className="max-w-6xl mx-auto text-center">
         <h1 className="text-3xl font-bold text-green-700 mb-6">Our Plants</h1>
 
         {isAdmin && (
           <Link href="/plants/add">
-            <button className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            <button className="cursor-pointer mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
               Add New Plant
             </button>
           </Link>
         )}
 
-        {/* Unified Search Bar */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 justify-center mb-6">
+        {/* Search Bar with Clear Button */}
+        <div className="relative w-full px-5  mx-auto mb-6">
           <input
             type="text"
-            placeholder="Search by name, category, or price..."
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            className="px-4 py-2 border rounded-md w-full"
-
+            placeholder="Search by name or category..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 pr-10 border rounded-md"
           />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black text-xl font-semibold pr-4 mr-1"
+              aria-label="Clear"
+            >
+              &times;
+            </button>
+          )}
         </div>
 
-        {/* Quick Filter Buttons */}
+        {/* Quick Category Buttons */}
         <div className="flex flex-wrap gap-2 justify-center mb-6">
-       {["Flowering", "Fruit", "Seasonal", "Indoor", "Outdoor"].map((label) => (
-
+          {["Flowering", "Fruit", "Seasonal", "Indoor", "Outdoor"].map((label) => (
             <button
               key={label}
-              onClick={() => setSearchName(label)}
-              className="px-3 py-1 bg-green-100 text-green-800 rounded-full hover:bg-green-200 text-sm"
+              onClick={() => setSearchTerm(label)}
+              className="cursor-pointer  px-3 py-1 bg-green-100 text-green-800 rounded-full hover:bg-green-200 text-sm"
             >
               {label}
             </button>
           ))}
         </div>
 
-        {/* Filtered Plants Grid */}
+        {/* Filtered Plant Grid */}
         <div
           className={`grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 justify-items-center ${styles.plantGrid}`}
         >
@@ -135,6 +129,14 @@ export default function PlantsPage() {
                 <h2 className="text-xl font-semibold text-green-800">
                   {plant.name}
                 </h2>
+
+                {/* Optional: Show category */}
+                <p className="text-gray-600 text-sm">
+                  <strong>Category:</strong>{" "}
+                  {plant.category
+                    ? plant.category.charAt(0).toUpperCase() + plant.category.slice(1)
+                    : "Unknown"}
+                </p>
 
                 <div className="flex justify-around items-center">
                   <span className="text-green-700 font-bold text-lg">
